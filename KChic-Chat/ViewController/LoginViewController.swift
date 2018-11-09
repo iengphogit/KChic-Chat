@@ -7,7 +7,7 @@
 //
 
 import UIKit
-
+import Firebase
 class LoginViewController: UIViewController {
 
     var userNameString: String?
@@ -54,7 +54,7 @@ class LoginViewController: UIViewController {
         tf.placeholder = "User name"
         tf.borderStyle = .roundedRect
         tf.tag = 1
-        tf.addTarget(self, action: #selector(onEditingChanged(_:)), for: .touchUpInside)
+        tf.addTarget(self, action: #selector(onEditingChanged(_:)), for: .editingChanged)
         tf.translatesAutoresizingMaskIntoConstraints = false
         return tf
     }()
@@ -73,7 +73,7 @@ class LoginViewController: UIViewController {
         tf.placeholder = "User password"
         tf.borderStyle = .roundedRect
         tf.isSecureTextEntry = true
-        tf.addTarget(self, action: #selector(onEditingChanged(_:)), for: .touchUpInside)
+        tf.addTarget(self, action: #selector(onEditingChanged(_:)), for: .editingChanged)
         tf.tag = 2
         tf.translatesAutoresizingMaskIntoConstraints = false
         return tf
@@ -213,10 +213,19 @@ class LoginViewController: UIViewController {
     }
     
     @objc func submitLogin(_ sender: UIButton){
-        let regex = try! NSRegularExpression(pattern: "(?=.*[A-Z])(?=.*[0-9])(?=.*[a-z]).{8,}")
-        let a = regex.matches(userPasswordString ?? "")
-        print("\(a)")
         
+        if isValidEmail(emailString: userNameString ?? "") && isValidPassword(pwdString: userPasswordString ?? "") {
+            Auth.auth().signIn(withEmail: userNameString ?? "", password: userPasswordString ?? "") { (User, Error) in
+                if Error != nil {
+                    self.handleError(Error!)
+                }else{
+                    let vc = ViewController()
+                    self.present(vc, animated: true, completion: nil)
+                }
+            }
+        }else{
+            print("")
+        }
     }
     
     func isValidEmail(emailString: String) -> Bool {
@@ -228,9 +237,9 @@ class LoginViewController: UIViewController {
     }
     
     func isValidPassword(pwdString: String) -> Bool {
-        //        let pwdRegEx = "[A-Z0-9a-z!@#$%^&*()]"
-        
-        return false
+        let regex = try! NSRegularExpression(pattern: "(?=.*[A-Z])(?=.*[0-9])(?=.*[a-z]).{8,}")
+        let isCheck = regex.matches(userPasswordString ?? "")
+        return isCheck
     }
     
     func testRegEx(_ text:String) -> Bool {
