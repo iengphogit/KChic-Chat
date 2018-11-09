@@ -16,6 +16,7 @@
 		C201A9C121952A7B004E43D6 /* LoginViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C201A9C021952A7B004E43D6 /* LoginViewController.swift */; };
 		C201A9C42195312C004E43D6 /* Montserrat-Black.ttf in Resources */ = {isa = PBXBuildFile; fileRef = C201A9C321953124004E43D6 /* Montserrat-Black.ttf */; };
 		C201A9C621953BD1004E43D6 /* SignUpViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C201A9C521953BD1004E43D6 /* SignUpViewController.swift */; };
+		C201A9C821956246004E43D6 /* EXTCollections.swift in Sources */ = {isa = PBXBuildFile; fileRef = C201A9C721956246004E43D6 /* EXTCollections.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -31,6 +32,7 @@
 		C201A9C2219530EF004E43D6 /* Montserrat-Bold.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; name = "Montserrat-Bold.ttf"; path = "../../../../../Downloads/Montserrat/Montserrat-Bold.ttf"; sourceTree = "<group>"; };
 		C201A9C321953124004E43D6 /* Montserrat-Black.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Montserrat-Black.ttf"; sourceTree = "<group>"; };
 		C201A9C521953BD1004E43D6 /* SignUpViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SignUpViewController.swift; sourceTree = "<group>"; };
+		C201A9C721956246004E43D6 /* EXTCollections.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EXTCollections.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -97,6 +99,7 @@
 			isa = PBXGroup;
 			children = (
 				C201A9BB219525BE004E43D6 /* UIColorHex.swift */,
+				C201A9C721956246004E43D6 /* EXTCollections.swift */,
 			);
 			path = Extensions;
 			sourceTree = "<group>";
@@ -185,6 +188,7 @@
 				C201A9C121952A7B004E43D6 /* LoginViewController.swift in Sources */,
 				C201A9BC219525BE004E43D6 /* UIColorHex.swift in Sources */,
 				C201A9A921949914004E43D6 /* ViewController.swift in Sources */,
+				C201A9C821956246004E43D6 /* EXTCollections.swift in Sources */,
 				C201A9A721949914004E43D6 /* AppDelegate.swift in Sources */,
 				C201A9C621953BD1004E43D6 /* SignUpViewController.swift in Sources */,
 			);

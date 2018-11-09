@@ -387,6 +387,8 @@ class SignUpViewController: UIViewController {
             
         }
         
+        print(isValid)
+        
     }
     
     @objc func gotoSignIn(_ sender: UIButton){
