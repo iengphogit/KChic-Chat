@@ -12,6 +12,7 @@ class LoginViewController: UIViewController {
 
     var userNameString: String?
     var userPasswordString: String?
+    var isAttemed = false
     
     let formViewHolder: UIView = {
         let view = UIView()
@@ -59,6 +60,17 @@ class LoginViewController: UIViewController {
         return tf
     }()
     
+    let userNameLabelMessage: UILabel = {
+        let msg = UILabel()
+        msg.text = "N/A"
+        msg.textColor = .red
+        msg.isHidden = true
+        msg.numberOfLines = 1
+        msg.font = UIFont(name: msg.font.fontName, size: 12)
+        msg.translatesAutoresizingMaskIntoConstraints = false
+        return msg
+    }()
+    
     let userPasswordLabel: UILabel = {
         let lbl = UILabel()
         lbl.textColor = UIColor.gray
@@ -77,6 +89,17 @@ class LoginViewController: UIViewController {
         tf.tag = 2
         tf.translatesAutoresizingMaskIntoConstraints = false
         return tf
+    }()
+    
+    var userPasswordLabelMessage: UILabel = {
+        let msg = UILabel()
+        msg.textColor = .red
+        msg.text = "N/A"
+        msg.isHidden = true
+        msg.numberOfLines = 1
+        msg.font = UIFont(name: msg.font.fontName, size: 12)
+        msg.translatesAutoresizingMaskIntoConstraints = false
+        return msg
     }()
     
     let loginButton: UIButton = {
@@ -163,6 +186,12 @@ class LoginViewController: UIViewController {
         userNameTextField.leadingAnchor.constraint(equalTo: formViewHolder.leadingAnchor).isActive = true
         userNameTextField.trailingAnchor.constraint(equalTo: formViewHolder.trailingAnchor).isActive = true
         
+        formViewHolder.addSubview(userNameLabelMessage)
+        userNameLabelMessage.translatesAutoresizingMaskIntoConstraints = false
+        userNameLabelMessage.topAnchor.constraint(equalTo: userNameTextField.bottomAnchor, constant: 8).isActive = true
+        userNameLabelMessage.leadingAnchor.constraint(equalTo: formViewHolder.leadingAnchor, constant: 0).isActive = true
+        userNameLabelMessage.trailingAnchor.constraint(equalTo: formViewHolder.trailingAnchor, constant: 0).isActive = true
+        
         formViewHolder.addSubview(userPasswordLabel)
         userPasswordLabel.topAnchor.constraint(equalTo: userNameTextField.bottomAnchor, constant: 24).isActive = true
         userPasswordLabel.leadingAnchor.constraint(equalTo: formViewHolder.leadingAnchor).isActive = true
@@ -174,8 +203,14 @@ class LoginViewController: UIViewController {
         userPasswordTextField.leadingAnchor.constraint(equalTo: formViewHolder.leadingAnchor).isActive = true
         userPasswordTextField.trailingAnchor.constraint(equalTo: formViewHolder.trailingAnchor).isActive = true
         
+        formViewHolder.addSubview(userPasswordLabelMessage)
+        userPasswordLabelMessage.translatesAutoresizingMaskIntoConstraints = false
+        userPasswordLabelMessage.topAnchor.constraint(equalTo: userPasswordTextField.bottomAnchor, constant: 8).isActive = true
+        userPasswordLabelMessage.leadingAnchor.constraint(equalTo: formViewHolder.leadingAnchor, constant: 0).isActive = true
+        userPasswordLabelMessage.trailingAnchor.constraint(equalTo: formViewHolder.trailingAnchor, constant: 0).isActive = true
+        
         formViewHolder.addSubview(loginButton)
-        loginButton.topAnchor.constraint(equalTo: userPasswordTextField.bottomAnchor, constant: 24).isActive = true
+        loginButton.topAnchor.constraint(equalTo: userPasswordLabelMessage.bottomAnchor, constant: 24).isActive = true
         loginButton.leadingAnchor.constraint(equalTo: formViewHolder.leadingAnchor).isActive = true
         loginButton.trailingAnchor.constraint(equalTo: formViewHolder.trailingAnchor).isActive = true
         loginButton.addTarget(self, action: #selector(submitLogin(_:)), for: .touchUpInside)
@@ -207,25 +242,79 @@ class LoginViewController: UIViewController {
     @objc func onEditingChanged(_ textField: UITextField){
         if textField.tag == 1 {
             userNameString = textField.text
+            if self.isAttemed {
+                if self.isValidEmail(emailString: textField.text ?? "") {
+                    userNameLabelMessage.isHidden = true
+                } else {
+                    userNameLabelMessage.isHidden = false
+                }
+                
+            }
         } else if textField.tag == 2 {
             userPasswordString = textField.text
+            if self.isAttemed {
+                if self.isValidPassword(pwdString: textField.text ?? ""){
+                    userPasswordLabelMessage.isHidden = true
+                    userPasswordLabelMessage.numberOfLines = 1
+                } else {
+                    userPasswordLabelMessage.isHidden = false
+                    userPasswordLabelMessage.numberOfLines = 3
+                }
+            }
         }
     }
     
+    let spinnerView = SpinnerViewController()
+    func showSpinnerView(){
+        spinnerView.view.frame = view.frame
+        view.addSubview(spinnerView.view)
+        spinnerView.didMove(toParent: self)
+    }
+    
+    func hideSpinnerView(){
+        spinnerView.willMove(toParent: nil)
+        spinnerView.view.removeFromSuperview()
+        spinnerView.removeFromParent()
+    }
+    
     @objc func submitLogin(_ sender: UIButton){
+        var isValid = false
+        isAttemed = true
+        userNameLabelMessage.text = "Invalid email address. eg. example@mail.com"
+        if isValidEmail(emailString: userNameString ?? "") {
+            userNameLabelMessage.isHidden = true
+            isValid = true
+        } else {
+            userNameLabelMessage.isHidden = false
+            isValid = false
+        }
         
-        if isValidEmail(emailString: userNameString ?? "") && isValidPassword(pwdString: userPasswordString ?? "") {
+        userPasswordLabelMessage.text = "Invalid password. Your password must be at least 8 characters long, contain at least one number and have a mixture of uppercase and lowercase letters."
+        if isValidPassword(pwdString: userPasswordString ?? "") && !(userPasswordString!.isEmpty) {
+            userPasswordLabelMessage.isHidden = true
+            userPasswordLabelMessage.numberOfLines = 1
+            isValid = true
+        }else{
+            userPasswordLabelMessage.isHidden = false
+            userPasswordLabelMessage.contentMode = .scaleToFill
+            userPasswordLabelMessage.numberOfLines = 3
+            isValid = false
+        }
+        
+        if isValid {
+            self.showSpinnerView()
             Auth.auth().signIn(withEmail: userNameString ?? "", password: userPasswordString ?? "") { (User, Error) in
                 if Error != nil {
+                    self.hideSpinnerView()
                     self.handleError(Error!)
                 }else{
+                    self.hideSpinnerView()
                     let vc = ViewController()
                     self.present(vc, animated: true, completion: nil)
                 }
             }
-        }else{
-            print("")
         }
+        
     }
     
     func isValidEmail(emailString: String) -> Bool {
