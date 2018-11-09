@@ -7,6 +7,7 @@
 //
 
 import UIKit
+import Firebase
 
 class SignUpViewController: UIViewController {
 
@@ -84,7 +85,9 @@ class SignUpViewController: UIViewController {
     var userNameLabelMessage:UILabel = {
         let msg = UILabel()
         msg.textColor = .red
+        msg.text = "N/A"
         msg.isHidden = true
+        msg.numberOfLines = 1
         msg.font = UIFont(name: msg.font.fontName, size: 12)
         msg.translatesAutoresizingMaskIntoConstraints = false
         return msg
@@ -110,7 +113,9 @@ class SignUpViewController: UIViewController {
     var userNamePasswordLabelMessage: UILabel = {
         let msg = UILabel()
         msg.textColor = .red
+        msg.text = "N/A"
         msg.isHidden = true
+        msg.numberOfLines = 1
         msg.font = UIFont(name: msg.font.fontName, size: 12)
         msg.translatesAutoresizingMaskIntoConstraints = false
         return msg
@@ -134,12 +139,14 @@ class SignUpViewController: UIViewController {
     }()
     
     let userNameConfirmLabelMessage: UILabel = {
-        let lbl = UILabel()
-        lbl.textColor = .red
-        lbl.isHidden = true
-        lbl.font = UIFont(name: lbl.font.fontName, size: 12)
-        lbl.translatesAutoresizingMaskIntoConstraints = false
-        return lbl
+        let msg = UILabel()
+        msg.text = "N/A"
+        msg.textColor = .red
+        msg.isHidden = true
+        msg.numberOfLines = 1
+        msg.font = UIFont(name: msg.font.fontName, size: 12)
+        msg.translatesAutoresizingMaskIntoConstraints = false
+        return msg
     }()
     
     let registerBtn: UIButton = {
@@ -198,6 +205,12 @@ class SignUpViewController: UIViewController {
         btn.layer.cornerRadius = 10
         btn.translatesAutoresizingMaskIntoConstraints = false
         return btn
+    }()
+    
+    var spinnerIndicator: UIActivityIndicatorView = {
+        let spinner = UIActivityIndicatorView(style: UIActivityIndicatorView.Style.whiteLarge)
+        
+        return spinner
     }()
     
     override func viewDidLoad() {
@@ -320,26 +333,33 @@ class SignUpViewController: UIViewController {
         switch (textField.tag ) {
         case 1:
             self.userNamer = textField.text ?? ""
-            if self.isAttemed && self.checkUsername(textField.text ?? "") {
-                userNameLabelMessage.isHidden = true
-            }else{
-                userNameLabelMessage.isHidden = false
+            if self.isAttemed {
+                if self.checkUsername(textField.text ?? "") {
+                    userNameLabelMessage.isHidden = true
+                } else {
+                    userNameLabelMessage.isHidden = false
+                }
+                
             }
         case 2:
             self.userPassword = textField.text ?? ""
-            if self.isAttemed && self.checkPassword(textField.text ?? "") {
-                userNamePasswordLabelMessage.isHidden = true
-                userNamePasswordLabelMessage.numberOfLines = 1
-            }else{
-                userNamePasswordLabelMessage.isHidden = false
-                userNamePasswordLabelMessage.numberOfLines = 3
+            if self.isAttemed {
+                if self.checkPassword(textField.text ?? "") {
+                    userNamePasswordLabelMessage.isHidden = true
+                    userNamePasswordLabelMessage.numberOfLines = 1
+                } else {
+                    userNamePasswordLabelMessage.isHidden = false
+                    userNamePasswordLabelMessage.numberOfLines = 3
+                }
             }
         case 3:
             self.userConfirmPassword = textField.text ?? ""
-            if self.isAttemed && (self.userPassword == self.userConfirmPassword) {
-                userNameConfirmLabelMessage.isHidden = true
-            }else{
-                userNameConfirmLabelMessage.isHidden = false
+            if self.isAttemed {
+                if (self.userPassword == self.userConfirmPassword) {
+                 userNameConfirmLabelMessage.isHidden = true
+                } else {
+                 userNameConfirmLabelMessage.isHidden = false
+                }
             }
             
         default:
@@ -349,8 +369,22 @@ class SignUpViewController: UIViewController {
         }
     }
     
+    let spinnerView = SpinnerViewController()
+    func showSpinnerView(){
+        spinnerView.view.frame = view.frame
+        view.addSubview(spinnerView.view)
+        spinnerView.didMove(toParent: self)
+    }
+    
+    func hideSpinnerView(){
+        spinnerView.willMove(toParent: nil)
+        spinnerView.view.removeFromSuperview()
+        spinnerView.removeFromParent()
+    }
+    
     @objc func submitRegister(_ button: UIButton){
         //print("Name: \(self.userNamer) Pass: \(self.userPassword) Confirm: \(self.userConfirmPassword)")
+        
         self.isAttemed = true
         var isValid: Bool = false
         
@@ -366,6 +400,7 @@ class SignUpViewController: UIViewController {
         userNamePasswordLabelMessage.text = "Invalid password. Your password must be at least 8 characters long, contain at least one number and have a mixture of uppercase and lowercase letters."
         if checkPassword(self.userPassword) && !self.userPassword.isEmpty {
             userNamePasswordLabelMessage.isHidden = true
+            userNamePasswordLabelMessage.numberOfLines = 1
             isValid = true
         }else{
             userNamePasswordLabelMessage.isHidden = false
@@ -384,7 +419,17 @@ class SignUpViewController: UIViewController {
         }
         
         if isValid {
-            
+            self.showSpinnerView()
+            Auth.auth().createUser(withEmail: userNamer, password: userPassword) { (User, Error) in
+                if Error != nil {
+                 //Error
+                    print(Error!)
+                }else{
+                    //Successful
+                    print("Insert successful")
+                    self.hideSpinnerView()
+                }
+            }
         } 
         
     }
