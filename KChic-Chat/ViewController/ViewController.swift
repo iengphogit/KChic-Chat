@@ -7,7 +7,7 @@
 //
 
 import UIKit
-
+import Firebase
 class ViewController: UITableViewController {
  
     override func viewDidLoad() {
@@ -17,8 +17,13 @@ class ViewController: UITableViewController {
     }
     
     @objc func handleLogout() {
-        let loginController = LoginViewController()
-        present(loginController, animated: true, completion: nil)
+        do {
+            try Auth.auth().signOut()
+            let loginController = LoginViewController()
+            present(loginController, animated: true, completion: nil)
+        }catch {
+            handleError(error)
+        }
     }
     
 
