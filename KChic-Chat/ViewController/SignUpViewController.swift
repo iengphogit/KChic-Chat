@@ -423,9 +423,10 @@ class SignUpViewController: UIViewController {
             Auth.auth().createUser(withEmail: userNamer, password: userPassword) { (User, Error) in
                 if Error != nil {
                     self.hideSpinnerView()
-                 //Error
-                    print(Error!)
-                    
+//                  Error
+//                  print(Error!)
+                    self.handleError(Error!)
+                    return
                 }else{
                     //Successful
                     print("Insert successful")
