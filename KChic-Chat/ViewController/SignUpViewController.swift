@@ -385,9 +385,7 @@ class SignUpViewController: UIViewController {
         
         if isValid {
             
-        }
-        
-        print(isValid)
+        } 
         
     }
     
