@@ -54,14 +54,30 @@
 		C201A9A521949914004E43D6 /* KChic-Chat */ = {
 			isa = PBXGroup;
 			children = (
-				C201A9A621949914004E43D6 /* AppDelegate.swift */,
-				C201A9A821949914004E43D6 /* ViewController.swift */,
+				C201A9B92195222D004E43D6 /* ViewController */,
+				C201A9B821952218004E43D6 /* Singleton */,
 				C201A9AA21949914004E43D6 /* Main.storyboard */,
 				C201A9AD21949915004E43D6 /* Assets.xcassets */,
 				C201A9AF21949915004E43D6 /* LaunchScreen.storyboard */,
 				C201A9B221949915004E43D6 /* Info.plist */,
 			);
 			path = "KChic-Chat";
+			sourceTree = "<group>";
+		};
+		C201A9B821952218004E43D6 /* Singleton */ = {
+			isa = PBXGroup;
+			children = (
+				C201A9A621949914004E43D6 /* AppDelegate.swift */,
+			);
+			path = Singleton;
+			sourceTree = "<group>";
+		};
+		C201A9B92195222D004E43D6 /* ViewController */ = {
+			isa = PBXGroup;
+			children = (
+				C201A9A821949914004E43D6 /* ViewController.swift */,
+			);
+			path = ViewController;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
