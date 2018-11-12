@@ -19,6 +19,9 @@
 		C201A9C821956246004E43D6 /* EXTCollections.swift in Sources */ = {isa = PBXBuildFile; fileRef = C201A9C721956246004E43D6 /* EXTCollections.swift */; };
 		C201A9CC219566F4004E43D6 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = C201A9CB219566F4004E43D6 /* GoogleService-Info.plist */; };
 		C201A9CF21957177004E43D6 /* SpinnerViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C201A9CE21957177004E43D6 /* SpinnerViewController.swift */; };
+		C22B9E1221997813004AFA0A /* NewMessageController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C22B9E1121997813004AFA0A /* NewMessageController.swift */; };
+		C22B9E1521997B71004AFA0A /* UserModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = C22B9E1421997B71004AFA0A /* UserModel.swift */; };
+		C22B9E1721998159004AFA0A /* TestClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = C22B9E1621998159004AFA0A /* TestClass.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -38,6 +41,9 @@
 		C201A9C721956246004E43D6 /* EXTCollections.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EXTCollections.swift; sourceTree = "<group>"; };
 		C201A9CB219566F4004E43D6 /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
 		C201A9CE21957177004E43D6 /* SpinnerViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SpinnerViewController.swift; sourceTree = "<group>"; };
+		C22B9E1121997813004AFA0A /* NewMessageController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NewMessageController.swift; sourceTree = "<group>"; };
+		C22B9E1421997B71004AFA0A /* UserModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserModel.swift; sourceTree = "<group>"; };
+		C22B9E1621998159004AFA0A /* TestClass.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TestClass.swift; sourceTree = "<group>"; };
 		FC2ED27E98DC924B2717C30E /* Pods-KChic-Chat.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-KChic-Chat.debug.xcconfig"; path = "Pods/Target Support Files/Pods-KChic-Chat/Pods-KChic-Chat.debug.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -91,6 +97,7 @@
 		C201A9A521949914004E43D6 /* KChic-Chat */ = {
 			isa = PBXGroup;
 			children = (
+				C22B9E1321997B55004AFA0A /* Model */,
 				C201A9CD21957156004E43D6 /* Utils */,
 				C201A9BD21952775004E43D6 /* Fonts */,
 				C201A9BA21952587004E43D6 /* Extensions */,
@@ -118,6 +125,7 @@
 				C201A9A821949914004E43D6 /* MessagesController.swift */,
 				C201A9C021952A7B004E43D6 /* LoginViewController.swift */,
 				C201A9C521953BD1004E43D6 /* SignUpViewController.swift */,
+				C22B9E1121997813004AFA0A /* NewMessageController.swift */,
 			);
 			path = ViewController;
 			sourceTree = "<group>";
@@ -146,6 +154,15 @@
 				C201A9CE21957177004E43D6 /* SpinnerViewController.swift */,
 			);
 			path = Utils;
+			sourceTree = "<group>";
+		};
+		C22B9E1321997B55004AFA0A /* Model */ = {
+			isa = PBXGroup;
+			children = (
+				C22B9E1421997B71004AFA0A /* UserModel.swift */,
+				C22B9E1621998159004AFA0A /* TestClass.swift */,
+			);
+			path = Model;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -293,12 +310,15 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				C22B9E1221997813004AFA0A /* NewMessageController.swift in Sources */,
 				C201A9C121952A7B004E43D6 /* LoginViewController.swift in Sources */,
 				C201A9BC219525BE004E43D6 /* UIColorHex.swift in Sources */,
 				C201A9A921949914004E43D6 /* MessagesController.swift in Sources */,
+				C22B9E1721998159004AFA0A /* TestClass.swift in Sources */,
 				C201A9C821956246004E43D6 /* EXTCollections.swift in Sources */,
 				C201A9A721949914004E43D6 /* AppDelegate.swift in Sources */,
 				C201A9CF21957177004E43D6 /* SpinnerViewController.swift in Sources */,
+				C22B9E1521997B71004AFA0A /* UserModel.swift in Sources */,
 				C201A9C621953BD1004E43D6 /* SignUpViewController.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

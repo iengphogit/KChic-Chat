@@ -33,7 +33,9 @@ class MessagesController: UITableViewController {
     }
     
     @objc func handleNewMessage(){
-        print("new msg")
+        let vc = NewMessageController()
+        let navigationVC = UINavigationController(rootViewController: vc)
+        self.present(navigationVC, animated: true, completion: nil)
     }
     
     @objc func handleLogout() {
