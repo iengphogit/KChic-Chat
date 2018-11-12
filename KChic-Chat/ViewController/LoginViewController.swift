@@ -302,6 +302,12 @@ class LoginViewController: UIViewController {
         }
         
         if isValid {
+            
+            let vc = ViewController() as UIViewController
+            let navigationController = UINavigationController(rootViewController: vc)
+            self.present(navigationController, animated: true, completion: nil)
+            
+            /*
             self.showSpinnerView()
             Auth.auth().signIn(withEmail: userNameString ?? "", password: userPasswordString ?? "") { (User, Error) in
                 if Error != nil {
@@ -309,10 +315,12 @@ class LoginViewController: UIViewController {
                     self.handleError(Error!)
                 }else{
                     self.hideSpinnerView()
-                    let vc = ViewController()
-                    self.present(vc, animated: true, completion: nil)
+                    let vc = ViewController() as UIViewController
+                    let navigationController = UINavigationController(rootViewController: vc)
+                    self.present(navigationController, animated: true, completion: nil)
                 }
             }
+             */
         }
         
     }

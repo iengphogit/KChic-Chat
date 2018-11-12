@@ -9,6 +9,7 @@
 import UIKit
 import Firebase
 
+
 class SignUpViewController: UIViewController {
 
     var userNamer: String = ""
@@ -430,6 +431,8 @@ class SignUpViewController: UIViewController {
                     //Successful
                     print("Insert successful")
                     self.hideSpinnerView()
+                    
+                    
                     let vc = ViewController()
                     self.present(vc, animated: true, completion: nil)
                 }

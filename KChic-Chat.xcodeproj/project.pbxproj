@@ -10,7 +10,6 @@
 		9D8EC54C54CE20888360FCEA /* Pods_KChic_Chat.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 92E877875E90B2D7A8F204B8 /* Pods_KChic_Chat.framework */; };
 		C201A9A721949914004E43D6 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = C201A9A621949914004E43D6 /* AppDelegate.swift */; };
 		C201A9A921949914004E43D6 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C201A9A821949914004E43D6 /* ViewController.swift */; };
-		C201A9AC21949914004E43D6 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = C201A9AA21949914004E43D6 /* Main.storyboard */; };
 		C201A9AE21949915004E43D6 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = C201A9AD21949915004E43D6 /* Assets.xcassets */; };
 		C201A9B121949915004E43D6 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = C201A9AF21949915004E43D6 /* LaunchScreen.storyboard */; };
 		C201A9BC219525BE004E43D6 /* UIColorHex.swift in Sources */ = {isa = PBXBuildFile; fileRef = C201A9BB219525BE004E43D6 /* UIColorHex.swift */; };
@@ -28,7 +27,6 @@
 		C201A9A321949914004E43D6 /* KChic-Chat.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "KChic-Chat.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		C201A9A621949914004E43D6 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		C201A9A821949914004E43D6 /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
-		C201A9AB21949914004E43D6 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
 		C201A9AD21949915004E43D6 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		C201A9B021949915004E43D6 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		C201A9B221949915004E43D6 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
@@ -98,7 +96,6 @@
 				C201A9BA21952587004E43D6 /* Extensions */,
 				C201A9B92195222D004E43D6 /* ViewController */,
 				C201A9B821952218004E43D6 /* Singleton */,
-				C201A9AA21949914004E43D6 /* Main.storyboard */,
 				C201A9AD21949915004E43D6 /* Assets.xcassets */,
 				C201A9AF21949915004E43D6 /* LaunchScreen.storyboard */,
 				C201A9B221949915004E43D6 /* Info.plist */,
@@ -216,7 +213,6 @@
 				C201A9C42195312C004E43D6 /* Montserrat-Black.ttf in Resources */,
 				C201A9AE21949915004E43D6 /* Assets.xcassets in Resources */,
 				C201A9CC219566F4004E43D6 /* GoogleService-Info.plist in Resources */,
-				C201A9AC21949914004E43D6 /* Main.storyboard in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -310,14 +306,6 @@
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXVariantGroup section */
-		C201A9AA21949914004E43D6 /* Main.storyboard */ = {
-			isa = PBXVariantGroup;
-			children = (
-				C201A9AB21949914004E43D6 /* Base */,
-			);
-			name = Main.storyboard;
-			sourceTree = "<group>";
-		};
 		C201A9AF21949915004E43D6 /* LaunchScreen.storyboard */ = {
 			isa = PBXVariantGroup;
 			children = (
