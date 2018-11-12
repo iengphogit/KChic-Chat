@@ -13,6 +13,7 @@ class LoginViewController: UIViewController {
     var userNameString: String?
     var userPasswordString: String?
     var isAttemed = false
+    var ref: DatabaseReference!
     
     let formViewHolder: UIView = {
         let view = UIView()
@@ -303,11 +304,6 @@ class LoginViewController: UIViewController {
         
         if isValid {
             
-            let vc = ViewController() as UIViewController
-            let navigationController = UINavigationController(rootViewController: vc)
-            self.present(navigationController, animated: true, completion: nil)
-            
-            /*
             self.showSpinnerView()
             Auth.auth().signIn(withEmail: userNameString ?? "", password: userPasswordString ?? "") { (User, Error) in
                 if Error != nil {
@@ -315,12 +311,23 @@ class LoginViewController: UIViewController {
                     self.handleError(Error!)
                 }else{
                     self.hideSpinnerView()
-                    let vc = ViewController() as UIViewController
+                    self.ref = Database.database().reference()
+                    self.ref.child("users").child(User!.uid).observeSingleEvent(of: .value, with: { (DataSnapshot) in
+                        let value = DataSnapshot.value as? NSDictionary
+                        let userName = value?["username"] as? String ?? ""
+                        let name = value?["name"] as? String ?? ""
+                        
+                        print("wao: \(userName) - \(name)")
+                    }) {(Error) in
+                        print(Error.localizedDescription)
+                    }
+                    
+                    let vc = MessagesController() as UIViewController
                     let navigationController = UINavigationController(rootViewController: vc)
                     self.present(navigationController, animated: true, completion: nil)
                 }
             }
-             */
+            
         }
         
     }

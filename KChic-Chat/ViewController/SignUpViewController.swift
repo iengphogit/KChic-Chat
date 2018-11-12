@@ -11,11 +11,15 @@ import Firebase
 
 
 class SignUpViewController: UIViewController {
-
+    
+    var userFullname: String = ""
     var userNamer: String = ""
     var userPassword: String = ""
     var userConfirmPassword: String = ""
     var isAttemed: Bool = false
+    
+    var ref: DatabaseReference!
+    
     
     var navBar: UINavigationBar = {
         let nav = UINavigationBar()
@@ -65,6 +69,22 @@ class SignUpViewController: UIViewController {
         lbl.attributedText = attributeString
         lbl.translatesAutoresizingMaskIntoConstraints = false
         return lbl
+    }()
+    
+    let userFullNameTextField: UITextField = {
+        let tf = UITextField()
+        tf.placeholder = "Name"
+        tf.tag = 0
+        tf.addTarget(self, action: #selector(onEditChanged(_:)), for: UIControl.Event.editingChanged)
+        tf.translatesAutoresizingMaskIntoConstraints = false
+        return tf
+    }()
+    
+    let userFullNameSeparator:UILabel = {
+        let line = UILabel()
+        line.backgroundColor = UIColor.gray
+        line.translatesAutoresizingMaskIntoConstraints = false
+        return line
     }()
     
     let userNameTextField: UITextField = {
@@ -252,8 +272,20 @@ class SignUpViewController: UIViewController {
         titleLabel.topAnchor.constraint(equalTo: welcomeLabel.bottomAnchor, constant: 3).isActive = true
         titleLabel.leadingAnchor.constraint(equalTo: mLogo.trailingAnchor, constant: 8).isActive = true
         
+        
+        signUpView.addSubview(userFullNameTextField)
+        userFullNameTextField.topAnchor.constraint(equalTo: mLogo.bottomAnchor, constant: 16).isActive = true
+        userFullNameTextField.leadingAnchor.constraint(equalTo: signUpView.leadingAnchor, constant: 16).isActive = true
+        userFullNameTextField.trailingAnchor.constraint(equalTo: signUpView.trailingAnchor, constant: -16).isActive = true
+        
+        signUpView.addSubview(userFullNameSeparator)
+        userFullNameSeparator.topAnchor.constraint(equalTo: userFullNameTextField.bottomAnchor, constant: 16).isActive = true
+        userFullNameSeparator.leadingAnchor.constraint(equalTo: signUpView.leadingAnchor, constant: 16).isActive = true
+        userFullNameSeparator.trailingAnchor.constraint(equalTo: signUpView.trailingAnchor, constant: -16).isActive = true
+        userFullNameSeparator.heightAnchor.constraint(equalToConstant: 0.5).isActive = true
+        
         signUpView.addSubview(userNameTextField)
-        userNameTextField.topAnchor.constraint(equalTo: mLogo.bottomAnchor, constant: 16).isActive = true
+        userNameTextField.topAnchor.constraint(equalTo: userFullNameSeparator.bottomAnchor, constant: 32).isActive = true
         userNameTextField.leadingAnchor.constraint(equalTo: signUpView.leadingAnchor, constant: 16).isActive = true
         userNameTextField.trailingAnchor.constraint(equalTo: signUpView.trailingAnchor, constant: -16).isActive = true
         
@@ -332,6 +364,8 @@ class SignUpViewController: UIViewController {
     
     @objc func onEditChanged(_ textField: UITextField) {
         switch (textField.tag ) {
+        case 0:
+            self.userFullname = textField.text!
         case 1:
             self.userNamer = textField.text ?? ""
             if self.isAttemed {
@@ -432,9 +466,16 @@ class SignUpViewController: UIViewController {
                     print("Insert successful")
                     self.hideSpinnerView()
                     
+                    self.ref = Database.database().reference()
+                    self.ref.child("users").child(User!.uid).setValue(
+                        ["name":self.userFullname, "username": self.userNamer]
+                    )
                     
-                    let vc = ViewController()
-                    self.present(vc, animated: true, completion: nil)
+                    let vc = MessagesController()
+                    
+                    let navigationBarVC = UINavigationController(rootViewController: vc)
+                    
+                    self.present(navigationBarVC, animated: true, completion: nil)
                 }
             }
         } 
