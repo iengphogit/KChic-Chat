@@ -9,4 +9,5 @@ target 'KChic-Chat' do
 pod 'Firebase'
 pod 'Firebase/Auth', '~> 4.0.0'
 pod 'Firebase/Database', '~> 4.0.0'
+pod 'Firebase/Storage', '~> 4.0.0'
 end
