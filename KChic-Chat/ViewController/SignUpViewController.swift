@@ -464,22 +464,51 @@ class SignUpViewController: UIViewController {
                 }else{
                     //Successful
                     print("Insert successful")
-                    self.hideSpinnerView()
                     
-                    self.ref = Database.database().reference()
-                    self.ref.child("users").child(User!.uid).setValue(
-                        ["name":self.userFullname, "username": self.userNamer]
-                    )
+                    let storageRef = Storage.storage().reference().child("imageprofile/\(User!.uid).jpg")
                     
-                    let vc = MessagesController()
+                    let uploadData = self.mLogo.image?.jpegData(compressionQuality: 0)
                     
-                    let navigationBarVC = UINavigationController(rootViewController: vc)
-                    
-                    self.present(navigationBarVC, animated: true, completion: nil)
+                    guard let data = uploadData else {
+                        return
+                    }
+                    storageRef.putData(data, metadata: nil, completion: { (metadata, error) in
+                        
+                        if error != nil {
+                            print(error!.localizedDescription)
+                        }else{
+                            print(metadata!)
+                            if let absoluteUrl = metadata?.downloadURL()?.absoluteString {
+                        
+                                let values = ["name":self.userFullname, "username": self.userNamer,"profileImageUrl": absoluteUrl]
+                                self.handleSaveUserWithUIDToFirebase(User!.uid, values as [String : AnyObject?])
+                                
+                                self.dismissSpinner()
+                            }
+                        }
+                        
+                    })
+                    self.dismissSpinner()
                 }
             }
         } 
         
+    }
+    
+    var counter:Int = 0
+    func dismissSpinner(){
+        counter += 1
+        if counter == 2 {
+            self.hideSpinnerView()
+        }
+    }
+    
+    func handleSaveUserWithUIDToFirebase(_ uid:String,_ values:[String: AnyObject?]){
+        self.ref = Database.database().reference()
+        self.ref.child("users").child(uid).setValue(values)
+        let vc = MessagesController()
+        let navigationBarVC = UINavigationController(rootViewController: vc)
+        self.present(navigationBarVC, animated: true, completion: nil)
     }
     
     @objc func gotoSignIn(_ sender: UIButton){
