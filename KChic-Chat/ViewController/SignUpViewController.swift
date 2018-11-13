@@ -53,10 +53,6 @@ class SignUpViewController: UIViewController {
         return imgView
     }()
     
-    @objc func handlemLogo(){
-        print("1")
-    }
-    
     let welcomeLabel: UILabel = {
         let lbl = UILabel()
         lbl.text = "Welcome to"
