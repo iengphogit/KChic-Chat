@@ -17,9 +17,7 @@ class SignUpViewController: UIViewController {
     var userPassword: String = ""
     var userConfirmPassword: String = ""
     var isAttemed: Bool = false
-    
     var ref: DatabaseReference!
-    
     
     var navBar: UINavigationBar = {
         let nav = UINavigationBar()
@@ -33,6 +31,7 @@ class SignUpViewController: UIViewController {
     
     let bodyView: UIView = {
         let view = UIView()
+        view.backgroundColor = .white
         view.translatesAutoresizingMaskIntoConstraints = false
         return view
     }()
@@ -44,12 +43,19 @@ class SignUpViewController: UIViewController {
         return view
     }()
     
-    let mLogo: UIImageView = {
+   lazy var mLogo: UIImageView = {
         let imgView = UIImageView()
         imgView.image = UIImage(named: "logo-ios")
+        imgView.isUserInteractionEnabled = true
+        let gesReconizer = UITapGestureRecognizer(target: self, action: #selector(handlemLogo))
+        imgView.addGestureRecognizer(gesReconizer)
         imgView.translatesAutoresizingMaskIntoConstraints = false
         return imgView
     }()
+    
+    @objc func handlemLogo(){
+        print("1")
+    }
     
     let welcomeLabel: UILabel = {
         let lbl = UILabel()
@@ -237,10 +243,8 @@ class SignUpViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         view.backgroundColor = .white
-        
         view.addSubview(navBar)
         view.addSubview(bodyView)
-        
         //set constraints
         setupBodyView()
     }
