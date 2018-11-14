@@ -7,9 +7,16 @@
 //
 
 import UIKit
+let imageCache = NSCache<AnyObject, AnyObject>()
+
 extension UIImageView {
     
     func downloadImageWithUrl(url:URL){
+//        self.image = nil
+        if let imageFromCache = imageCache.object(forKey: url as AnyObject) as? UIImage {
+            self.image = imageFromCache
+            return
+        }
         downloadImage(from: url)
     }
     
@@ -20,7 +27,10 @@ extension UIImageView {
             print(response?.suggestedFilename ?? url.lastPathComponent)
             print("Download Finished")
             DispatchQueue.main.async() {
-                self.image = UIImage(data: data)!
+                if let downloadImg = UIImage(data: data) {
+                    imageCache.setObject(downloadImg, forKey: url as AnyObject)
+                    self.image = UIImage(data: data)
+                }
                 
             }
         }
