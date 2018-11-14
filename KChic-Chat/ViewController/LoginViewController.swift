@@ -14,6 +14,7 @@ class LoginViewController: UIViewController {
     var userPasswordString: String?
     var isAttemed = false
     var ref: DatabaseReference!
+    var messageController:MessagesController?
     
     let formViewHolder: UIView = {
         let view = UIView()
@@ -323,6 +324,7 @@ class LoginViewController: UIViewController {
                     }
                     
                     let vc = MessagesController() as UIViewController
+                    self.messageController?.fetchUserAndSetupNavBarTitle()
                     let navigationController = UINavigationController(rootViewController: vc)
                     self.present(navigationController, animated: true, completion: nil)
                 }
