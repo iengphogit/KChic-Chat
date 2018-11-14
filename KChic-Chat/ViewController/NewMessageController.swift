@@ -48,7 +48,7 @@ class NewMessageController: UITableViewController {
     }
     
     override func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
-        return 100
+        return 72
     }
     
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
@@ -57,12 +57,9 @@ class NewMessageController: UITableViewController {
         
         cell.textLabel?.text = users[indexPath.row].name
         cell.detailTextLabel?.text = users[indexPath.row].username
-//        cell.imageView?.image = UIImage(named: "logo-ios")
-//        cell.imageView?.contentMode = .scaleAspectFit
-        
         if let profileImageUrl = users[indexPath.row].profileImageUrl {
             let url = URL(string: profileImageUrl)
-//            cell.imageView?.contentMode = .scaleAspectFit
+            cell.imageView?.contentMode = .scaleAspectFit
             downloadImage(from: url!, imageV: cell.profileImageView )
         }
         
