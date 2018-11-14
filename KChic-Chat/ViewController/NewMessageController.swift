@@ -47,6 +47,10 @@ class NewMessageController: UITableViewController {
         return users.count
     }
     
+    override func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
+        return 100
+    }
+    
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         //let cell = UITableViewCell(style: UITableViewCell.CellStyle.subtitle, reuseIdentifier: cellId)
         let cell = tableView.dequeueReusableCell(withIdentifier: cellId) as! Usercell
@@ -94,6 +98,8 @@ class Usercell: UITableViewCell {
     let profileImageView: UIImageView = {
         let img = UIImageView()
         img.image = UIImage(named: "logo-ios")
+        img.layer.cornerRadius = 26
+        img.layer.masksToBounds = true
         img.translatesAutoresizingMaskIntoConstraints = false
         return img
     }()
@@ -101,19 +107,19 @@ class Usercell: UITableViewCell {
     
     override func layoutSubviews() {
         super.layoutSubviews()
-        textLabel?.frame = CGRect(x: 64, y: textLabel?.frame.origin.y ?? 0 , width: (textLabel?.frame.size.width)!, height: textLabel?.frame.size.height ?? 0)
+        textLabel?.frame = CGRect(x: 72, y: textLabel?.frame.origin.y ?? 0 , width: (textLabel?.frame.size.width)!, height: textLabel?.frame.size.height ?? 0)
         
-        detailTextLabel?.frame = CGRect(x: 64, y: (detailTextLabel?.frame.origin.y)!, width: detailTextLabel?.frame.size.width ?? 0, height: detailTextLabel?.frame.size.height ?? 0)
+        detailTextLabel?.frame = CGRect(x: 72, y: (detailTextLabel?.frame.origin.y)!, width: detailTextLabel?.frame.size.width ?? 0, height: detailTextLabel?.frame.size.height ?? 0)
     }
     
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
         super.init(style: .subtitle, reuseIdentifier: reuseIdentifier)
         addSubview(profileImageView)
-        profileImageView.topAnchor.constraint(equalTo: self.topAnchor, constant: 8).isActive = true
+//        profileImageView.topAnchor.constraint(equalTo: self.topAnchor, constant: 8).isActive = true
         profileImageView.centerYAnchor.constraint(equalTo: self.centerYAnchor).isActive = true
         profileImageView.leadingAnchor.constraint(equalTo: self.leadingAnchor, constant: 8).isActive = true
-        profileImageView.widthAnchor.constraint(equalToConstant: 40).isActive = true
-        profileImageView.heightAnchor.constraint(equalToConstant: 40).isActive = true
+        profileImageView.widthAnchor.constraint(equalToConstant: 52).isActive = true
+        profileImageView.heightAnchor.constraint(equalToConstant: 52).isActive = true
     }
     
     required init?(coder aDecoder: NSCoder) {
