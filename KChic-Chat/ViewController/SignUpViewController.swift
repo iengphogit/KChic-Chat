@@ -464,10 +464,9 @@ class SignUpViewController: UIViewController {
                 }else{
                     //Successful
                     print("Insert successful")
-                    
-                    let storageRef = Storage.storage().reference().child("imageprofile/\(User!.uid).jpg")
-                    
-                    let uploadData = self.mLogo.image?.jpegData(compressionQuality: 0)
+                    let uuid = NSUUID().uuidString
+                    let storageRef = Storage.storage().reference().child("profile_images/\(uuid).jpg")
+                    let uploadData = self.mLogo.image?.jpegData(compressionQuality: 90)
                     
                     guard let data = uploadData else {
                         return

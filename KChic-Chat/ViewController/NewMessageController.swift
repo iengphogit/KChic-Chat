@@ -18,6 +18,7 @@ class NewMessageController: UITableViewController {
         
         navigationItem.leftBarButtonItem = UIBarButtonItem(title: "Cancel", style: .plain, target: self, action: #selector(handleCancel))
         self.fetchUsers()
+        tableView.register(Usercell.self, forCellReuseIdentifier: cellId)
     }
     
     func fetchUsers() {
@@ -28,6 +29,7 @@ class NewMessageController: UITableViewController {
             
             user.name = dictionary!["name"] as? String
             user.username = dictionary!["username"] as? String
+            user.profileImageUrl = dictionary!["profileImageUrl"] as? String
             self.users.append(user)
             print(user.name!, user.username!)
             
@@ -46,15 +48,75 @@ class NewMessageController: UITableViewController {
     }
     
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cell = UITableViewCell(style: UITableViewCell.CellStyle.subtitle, reuseIdentifier: cellId)
+        //let cell = UITableViewCell(style: UITableViewCell.CellStyle.subtitle, reuseIdentifier: cellId)
+        let cell = tableView.dequeueReusableCell(withIdentifier: cellId) as! Usercell
         
         cell.textLabel?.text = users[indexPath.row].name
         cell.detailTextLabel?.text = users[indexPath.row].username
+//        cell.imageView?.image = UIImage(named: "logo-ios")
+//        cell.imageView?.contentMode = .scaleAspectFit
+        
+        if let profileImageUrl = users[indexPath.row].profileImageUrl {
+            let url = URL(string: profileImageUrl)
+//            cell.imageView?.contentMode = .scaleAspectFit
+            downloadImage(from: url!, imageV: cell.profileImageView )
+        }
+        
         return cell
     }
     
     @objc func handleCancel() {
         self.dismiss(animated: true, completion: nil)
     }
+    
+    func downloadImage(from url: URL, imageV:UIImageView){
+        print("Download Started")
+        getData(from: url) { data, response, error in
+            guard let data = data, error == nil else { return }
+            print(response?.suggestedFilename ?? url.lastPathComponent)
+            print("Download Finished")
+            DispatchQueue.main.async() {
+                imageV.image = UIImage(data: data)!
+                print("Download done")
+                
+            }
+        }
+    }
+    
+    func getData(from url: URL, completion: @escaping (Data?, URLResponse?, Error?) -> ()) {
+        URLSession.shared.dataTask(with: url, completionHandler: completion).resume()
+    }
 
+}
+
+class Usercell: UITableViewCell {
+    
+    let profileImageView: UIImageView = {
+        let img = UIImageView()
+        img.image = UIImage(named: "logo-ios")
+        img.translatesAutoresizingMaskIntoConstraints = false
+        return img
+    }()
+    
+    
+    override func layoutSubviews() {
+        super.layoutSubviews()
+        textLabel?.frame = CGRect(x: 64, y: textLabel?.frame.origin.y ?? 0 , width: (textLabel?.frame.size.width)!, height: textLabel?.frame.size.height ?? 0)
+        
+        detailTextLabel?.frame = CGRect(x: 64, y: (detailTextLabel?.frame.origin.y)!, width: detailTextLabel?.frame.size.width ?? 0, height: detailTextLabel?.frame.size.height ?? 0)
+    }
+    
+    override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
+        super.init(style: .subtitle, reuseIdentifier: reuseIdentifier)
+        addSubview(profileImageView)
+        profileImageView.topAnchor.constraint(equalTo: self.topAnchor, constant: 8).isActive = true
+        profileImageView.centerYAnchor.constraint(equalTo: self.centerYAnchor).isActive = true
+        profileImageView.leadingAnchor.constraint(equalTo: self.leadingAnchor, constant: 8).isActive = true
+        profileImageView.widthAnchor.constraint(equalToConstant: 40).isActive = true
+        profileImageView.heightAnchor.constraint(equalToConstant: 40).isActive = true
+    }
+    
+    required init?(coder aDecoder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
 }
