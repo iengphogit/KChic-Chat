@@ -11,7 +11,7 @@ import Firebase
 class MessagesController: UITableViewController {
     let cellId = "cellId"
     var messages = [MessageModel]()
-    
+    var messagesDictionary = [String: MessageModel]()
     override func viewDidLoad() {
         super.viewDidLoad()
         view.backgroundColor = .white
@@ -41,7 +41,14 @@ class MessagesController: UITableViewController {
                 msg.text = dictionary["text"] as? String
                 msg.timestamp = dictionary["timestamp"] as? Int
                 msg.toId = dictionary["toId"] as? String
-                self.messages.append(msg)
+                //self.messages.append(msg)
+                
+                self.messagesDictionary[msg.toId!] = msg
+                self.messages = Array(self.messagesDictionary.values)
+                
+                self.messages.sort(by: { (message1, message2) -> Bool in
+                    return message1.timestamp! > message2.timestamp!
+                })
                 
                 DispatchQueue.main.async {
                     self.tableView.reloadData()

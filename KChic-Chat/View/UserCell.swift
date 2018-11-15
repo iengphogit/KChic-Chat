@@ -38,7 +38,8 @@ class UserCell: UITableViewCell {
                         if let second = self.message?.timestamp {
                             let date = Date(timeIntervalSince1970: TimeInterval(second))
                             let dateFormat = DateFormatter()
-                            dateFormat.dateFormat = "HH:mm:ss a"
+//                            dateFormat.timeZone = TimeZone(abbreviation: "GMT")
+                            dateFormat.dateFormat = "hh:mm:ss a"
                             self.timeLabel.text = dateFormat.string(from: date)
                         }
                     }
