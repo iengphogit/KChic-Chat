@@ -8,8 +8,17 @@
 
 import UIKit
 
-class UserModel: NSObject {
+class UserModel:NSObject {
     var name: String?
     var username: String?
     var profileImageUrl: String?
+    
+    init(name:String?, username:String?){
+        self.name = name
+        self.username = username
+    }
+    
+    override convenience init() {
+        self.init(name: "", username: "")
+    }
 }

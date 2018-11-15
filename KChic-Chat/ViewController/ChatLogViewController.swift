@@ -10,13 +10,16 @@ import UIKit
 import Firebase
 class ChatLogViewController: UICollectionViewController, UITextFieldDelegate {
 
+    var user:UserModel?
     override func viewDidLoad() {
         super.viewDidLoad()
         view.backgroundColor = .white
         self.collectionView.backgroundColor = .white
-        navigationItem.title = "Chat Log Controller"
-        // Do any additional setup after loading the view.
-    
+        
+        if let title = user?.name {
+            navigationItem.title = title
+        }
+        
         setupContainerView()
     }
     

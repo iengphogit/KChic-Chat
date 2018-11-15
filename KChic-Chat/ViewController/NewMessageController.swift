@@ -12,16 +12,23 @@ class NewMessageController: UITableViewController {
     var users = [UserModel]()
     let cellId: String = "cellId"
     
+    //let users = [UserModel(name: "name1", username: "test1"), UserModel(name: "name2", username: "test2")]
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         self.view.backgroundColor = .white
-        
         navigationItem.leftBarButtonItem = UIBarButtonItem(title: "Cancel", style: .plain, target: self, action: #selector(handleCancel))
-        self.fetchUsers()
+        
         tableView.register(Usercell.self, forCellReuseIdentifier: cellId)
+        tableView.delaysContentTouches = false
+    }
+    
+    override func viewWillAppear(_ animated: Bool) {
+        self.fetchUsers()
     }
     
     func fetchUsers() {
+        
         Database.database().reference().child("users").observe(.childAdded, with: { (DataSnapshot) in
             
             let dictionary = DataSnapshot.value as? [String: AnyObject]
@@ -31,7 +38,7 @@ class NewMessageController: UITableViewController {
             user.username = dictionary!["username"] as? String
             user.profileImageUrl = dictionary!["profileImageUrl"] as? String
             self.users.append(user)
-            print(user.name!, user.username!)
+//            print(user.name!, user.username!)
             
             DispatchQueue.main.async {
                 self.tableView.reloadData()
@@ -40,8 +47,8 @@ class NewMessageController: UITableViewController {
         }) { (Error) in
             print(Error.localizedDescription)
         }
+        
     }
-    
     
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return users.count
@@ -51,8 +58,12 @@ class NewMessageController: UITableViewController {
         return 72
     }
     
+    override func numberOfSections(in tableView: UITableView) -> Int {
+        return 1
+    }
+    
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        //let cell = UITableViewCell(style: UITableViewCell.CellStyle.subtitle, reuseIdentifier: cellId)
+        //let cell = UITableViewCell(style: UITableViewCell.CellStyle.default, reuseIdentifier: cellId)
         let cell = tableView.dequeueReusableCell(withIdentifier: cellId) as! Usercell
         
         cell.textLabel?.text = users[indexPath.row].name
@@ -68,6 +79,14 @@ class NewMessageController: UITableViewController {
     
     @objc func handleCancel() {
         self.dismiss(animated: true, completion: nil)
+    }
+    
+    var messageController: MessagesController?
+    
+    override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        dismiss(animated: true, completion: nil)
+        let user = self.users[indexPath.row]
+        self.messageController?.showChatController(user: user)
     }
     
     
@@ -86,11 +105,14 @@ class Usercell: UITableViewCell {
     }()
     
     
+    
     override func layoutSubviews() {
         super.layoutSubviews()
         textLabel?.frame = CGRect(x: 72, y: textLabel?.frame.origin.y ?? 0 , width: (textLabel?.frame.size.width)!, height: textLabel?.frame.size.height ?? 0)
         
         detailTextLabel?.frame = CGRect(x: 72, y: (detailTextLabel?.frame.origin.y)!, width: detailTextLabel?.frame.size.width ?? 0, height: detailTextLabel?.frame.size.height ?? 0)
+        
+        
     }
     
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {

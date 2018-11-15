@@ -103,14 +103,15 @@ class MessagesController: UITableViewController {
         
     }
     
-    @objc func showChatController(){
+    @objc func showChatController(user:UserModel){
         let clVC = ChatLogViewController(collectionViewLayout: UICollectionViewFlowLayout())
-        clVC.view.backgroundColor = .red
+        clVC.user = user
         navigationController?.pushViewController(clVC, animated: true)
     }
     
     @objc func handleNewMessage(){
         let vc = NewMessageController()
+        vc.messageController = self
         let navigationVC = UINavigationController(rootViewController: vc)
         self.present(navigationVC, animated: true, completion: nil)
     }
