@@ -91,7 +91,20 @@ class MessagesController: UITableViewController {
         profileTitle.text = user.name
         profileTitle.numberOfLines = 1
 //        profileTitle.lineBreakMode = .byWordWrapping
+        
+        let tap = UITapGestureRecognizer(target: self, action: #selector(self.showChatController))
+        profileTitle.isUserInteractionEnabled = true
+        profileTitle.addGestureRecognizer(tap)
+        
+        self.navigationController?.view.addGestureRecognizer(tap)
+        self.navigationController?.navigationBar.addGestureRecognizer(tap)
+        
         self.navigationItem.titleView = titleView
+        
+    }
+    
+    @objc func showChatController(){
+        print(123)
     }
     
     @objc func handleNewMessage(){
