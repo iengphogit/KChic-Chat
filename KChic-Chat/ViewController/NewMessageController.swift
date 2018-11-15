@@ -19,8 +19,7 @@ class NewMessageController: UITableViewController {
         self.view.backgroundColor = .white
         navigationItem.leftBarButtonItem = UIBarButtonItem(title: "Cancel", style: .plain, target: self, action: #selector(handleCancel))
         
-        tableView.register(Usercell.self, forCellReuseIdentifier: cellId)
-        tableView.delaysContentTouches = false
+        tableView.register(UserCell.self, forCellReuseIdentifier: cellId)
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -33,7 +32,7 @@ class NewMessageController: UITableViewController {
             
             let dictionary = DataSnapshot.value as? [String: AnyObject]
             let user = UserModel()
-            
+            user.id = DataSnapshot.key
             user.name = dictionary!["name"] as? String
             user.username = dictionary!["username"] as? String
             user.profileImageUrl = dictionary!["profileImageUrl"] as? String
@@ -64,7 +63,7 @@ class NewMessageController: UITableViewController {
     
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         //let cell = UITableViewCell(style: UITableViewCell.CellStyle.default, reuseIdentifier: cellId)
-        let cell = tableView.dequeueReusableCell(withIdentifier: cellId) as! Usercell
+        let cell = tableView.dequeueReusableCell(withIdentifier: cellId) as! UserCell
         
         cell.textLabel?.text = users[indexPath.row].name
         cell.detailTextLabel?.text = users[indexPath.row].username
@@ -91,41 +90,4 @@ class NewMessageController: UITableViewController {
     
     
 
-}
-
-class Usercell: UITableViewCell {
-    
-    let profileImageView: UIImageView = {
-        let img = UIImageView()
-        img.image = UIImage(named: "logo-ios")
-        img.layer.cornerRadius = 26
-        img.layer.masksToBounds = true
-        img.translatesAutoresizingMaskIntoConstraints = false
-        return img
-    }()
-    
-    
-    
-    override func layoutSubviews() {
-        super.layoutSubviews()
-        textLabel?.frame = CGRect(x: 72, y: textLabel?.frame.origin.y ?? 0 , width: (textLabel?.frame.size.width)!, height: textLabel?.frame.size.height ?? 0)
-        
-        detailTextLabel?.frame = CGRect(x: 72, y: (detailTextLabel?.frame.origin.y)!, width: detailTextLabel?.frame.size.width ?? 0, height: detailTextLabel?.frame.size.height ?? 0)
-        
-        
-    }
-    
-    override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
-        super.init(style: .subtitle, reuseIdentifier: reuseIdentifier)
-        addSubview(profileImageView)
-//        profileImageView.topAnchor.constraint(equalTo: self.topAnchor, constant: 8).isActive = true
-        profileImageView.centerYAnchor.constraint(equalTo: self.centerYAnchor).isActive = true
-        profileImageView.leadingAnchor.constraint(equalTo: self.leadingAnchor, constant: 8).isActive = true
-        profileImageView.widthAnchor.constraint(equalToConstant: 52).isActive = true
-        profileImageView.heightAnchor.constraint(equalToConstant: 52).isActive = true
-    }
-    
-    required init?(coder aDecoder: NSCoder) {
-        fatalError("init(coder:) has not been implemented")
-    }
 }

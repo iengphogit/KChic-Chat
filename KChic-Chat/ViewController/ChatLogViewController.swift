@@ -16,9 +16,7 @@ class ChatLogViewController: UICollectionViewController, UITextFieldDelegate {
         view.backgroundColor = .white
         self.collectionView.backgroundColor = .white
         
-        if let title = user?.name {
-            navigationItem.title = title
-        }
+            navigationItem.title = user?.name ?? "unknow"
         
         setupContainerView()
     }
@@ -34,10 +32,12 @@ class ChatLogViewController: UICollectionViewController, UITextFieldDelegate {
     
     @objc func sendMessageHandler() {
         print(messageTextField.text!)
-        
+        let toId = user!.id!
+        let fromId = Auth.auth().currentUser?.uid ?? ""
+        let timestamp = Int(NSDate().timeIntervalSince1970)
         let ref = Database.database().reference().child("messages")
         let childRef = ref.childByAutoId()
-        childRef.setValue(messageTextField.text!)
+        childRef.setValue(["text":messageTextField.text!, "toId": toId, "fromId": fromId, "timestamp": timestamp])
         messageTextField.text = ""
     }
     

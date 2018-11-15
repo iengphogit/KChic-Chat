@@ -25,6 +25,8 @@
 		C22B9E1721998159004AFA0A /* TestClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = C22B9E1621998159004AFA0A /* TestClass.swift */; };
 		C2DA18E5219BCE1200350D4D /* UIImageExt.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2DA18E4219BCE1200350D4D /* UIImageExt.swift */; };
 		C2DA18E7219D046A00350D4D /* ChatLogViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2DA18E6219D046A00350D4D /* ChatLogViewController.swift */; };
+		C2DA18E9219D507F00350D4D /* MessageModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2DA18E8219D507F00350D4D /* MessageModel.swift */; };
+		C2DA18EC219D588400350D4D /* UserCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2DA18EB219D588400350D4D /* UserCell.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -50,6 +52,8 @@
 		C22B9E1621998159004AFA0A /* TestClass.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TestClass.swift; sourceTree = "<group>"; };
 		C2DA18E4219BCE1200350D4D /* UIImageExt.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UIImageExt.swift; sourceTree = "<group>"; };
 		C2DA18E6219D046A00350D4D /* ChatLogViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatLogViewController.swift; sourceTree = "<group>"; };
+		C2DA18E8219D507F00350D4D /* MessageModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MessageModel.swift; sourceTree = "<group>"; };
+		C2DA18EB219D588400350D4D /* UserCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserCell.swift; sourceTree = "<group>"; };
 		FC2ED27E98DC924B2717C30E /* Pods-KChic-Chat.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-KChic-Chat.debug.xcconfig"; path = "Pods/Target Support Files/Pods-KChic-Chat/Pods-KChic-Chat.debug.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -103,6 +107,7 @@
 		C201A9A521949914004E43D6 /* KChic-Chat */ = {
 			isa = PBXGroup;
 			children = (
+				C2DA18EA219D587400350D4D /* View */,
 				C22B9E1321997B55004AFA0A /* Model */,
 				C201A9CD21957156004E43D6 /* Utils */,
 				C201A9BD21952775004E43D6 /* Fonts */,
@@ -170,8 +175,17 @@
 			children = (
 				C22B9E1421997B71004AFA0A /* UserModel.swift */,
 				C22B9E1621998159004AFA0A /* TestClass.swift */,
+				C2DA18E8219D507F00350D4D /* MessageModel.swift */,
 			);
 			path = Model;
+			sourceTree = "<group>";
+		};
+		C2DA18EA219D587400350D4D /* View */ = {
+			isa = PBXGroup;
+			children = (
+				C2DA18EB219D588400350D4D /* UserCell.swift */,
+			);
+			path = View;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -327,7 +341,9 @@
 				C2DA18E7219D046A00350D4D /* ChatLogViewController.swift in Sources */,
 				C2DA18E5219BCE1200350D4D /* UIImageExt.swift in Sources */,
 				C22B9E1721998159004AFA0A /* TestClass.swift in Sources */,
+				C2DA18EC219D588400350D4D /* UserCell.swift in Sources */,
 				C201A9C821956246004E43D6 /* EXTCollections.swift in Sources */,
+				C2DA18E9219D507F00350D4D /* MessageModel.swift in Sources */,
 				C201A9A721949914004E43D6 /* AppDelegate.swift in Sources */,
 				C201A9CF21957177004E43D6 /* SpinnerViewController.swift in Sources */,
 				C22B9E1521997B71004AFA0A /* UserModel.swift in Sources */,

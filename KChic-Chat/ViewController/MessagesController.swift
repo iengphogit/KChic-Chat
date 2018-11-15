@@ -9,7 +9,9 @@
 import UIKit
 import Firebase
 class MessagesController: UITableViewController {
- 
+    let cellId = "cellId"
+    var messages = [MessageModel]()
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         view.backgroundColor = .white
@@ -21,8 +23,54 @@ class MessagesController: UITableViewController {
         navigationItem.rightBarButtonItem = UIBarButtonItem(image: image, style: .plain, target: self, action: #selector(self.handleNewMessage))
         
         checkIfUserIsLoggedIn()
+        observeMessages()
+        
+        tableView.register(UserCell.self, forCellReuseIdentifier: self.cellId)
     }
     
+    func observeMessages(){
+    
+        let ref = Database.database().reference().child("messages")
+        ref.observe(.childAdded, with: { (DataSnapshot) in
+            
+            print(DataSnapshot)
+            
+            if let dictionary = DataSnapshot.value as? [String: AnyObject] {
+                let msg:MessageModel = MessageModel()
+                msg.fromId = dictionary["fromId"]! as? String
+                msg.text = dictionary["text"] as? String
+                msg.timestamp = dictionary["timestamp"] as? Int
+                msg.toId = dictionary["toId"] as? String
+                self.messages.append(msg)
+                
+                DispatchQueue.main.async {
+                    self.tableView.reloadData()
+                }
+            }
+            
+            
+        }) { (Error) in
+            print(Error.localizedDescription)
+        }
+    }
+    
+    override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+        return messages.count
+    }
+    
+    override func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
+        return 72
+    }
+    
+    override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+//        let cell = UITableViewCell(style: .subtitle, reuseIdentifier: "cellId")
+        let cell = tableView.dequeueReusableCell(withIdentifier: cellId, for: indexPath) as! UserCell
+        
+        let message = messages[indexPath.row]
+        cell.message = message
+        
+        return cell
+    }
     
     func checkIfUserIsLoggedIn(){
         if Auth.auth().currentUser?.uid == nil {
@@ -43,6 +91,7 @@ class MessagesController: UITableViewController {
 //                self.navigationItem.title = dictionary["name"] as? String
                 
                 let user = UserModel()
+                user.id = DataSnapshot.key
                 user.name = dictionary["name"] as? String
                 user.username = dictionary["username"] as? String
                 user.profileImageUrl = dictionary["profileImageUrl"] as? String
@@ -60,6 +109,7 @@ class MessagesController: UITableViewController {
         titleView.backgroundColor = .red
         
         let profileImageView = UIImageView()
+        profileImageView.image = UIImage(named: "logo-ios")
         if let profileImageUrl = user.profileImageUrl {
             profileImageView.downloadImageWithUrl(url: URL(string: profileImageUrl)!)
         }
@@ -92,12 +142,16 @@ class MessagesController: UITableViewController {
         profileTitle.numberOfLines = 1
 //        profileTitle.lineBreakMode = .byWordWrapping
         
+        /*
+         
         let tap = UITapGestureRecognizer(target: self, action: #selector(self.showChatController))
         profileTitle.isUserInteractionEnabled = true
         profileTitle.addGestureRecognizer(tap)
         
         self.navigationController?.view.addGestureRecognizer(tap)
         self.navigationController?.navigationBar.addGestureRecognizer(tap)
+ 
+        */
         
         self.navigationItem.titleView = titleView
         
