@@ -104,7 +104,9 @@ class MessagesController: UITableViewController {
     }
     
     @objc func showChatController(){
-        print(123)
+        let clVC = ChatLogViewController(collectionViewLayout: UICollectionViewFlowLayout())
+        clVC.view.backgroundColor = .red
+        navigationController?.pushViewController(clVC, animated: true)
     }
     
     @objc func handleNewMessage(){
