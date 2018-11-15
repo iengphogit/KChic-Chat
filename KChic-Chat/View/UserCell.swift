@@ -54,14 +54,28 @@ class UserCell: UITableViewCell {
         
     }
     
+    let timeLabel:UILabel = {
+        let lbl = UILabel()
+        lbl.text = "hh:mm:ss"
+        lbl.textColor = UIColor.init(netHex: 0xb2b2b2)
+        lbl.translatesAutoresizingMaskIntoConstraints = false
+        return lbl
+    }()
+    
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
         super.init(style: .subtitle, reuseIdentifier: reuseIdentifier)
         addSubview(profileImageView)
+        addSubview(timeLabel)
         //        profileImageView.topAnchor.constraint(equalTo: self.topAnchor, constant: 8).isActive = true
         profileImageView.centerYAnchor.constraint(equalTo: self.centerYAnchor).isActive = true
         profileImageView.leadingAnchor.constraint(equalTo: self.leadingAnchor, constant: 8).isActive = true
         profileImageView.widthAnchor.constraint(equalToConstant: 52).isActive = true
         profileImageView.heightAnchor.constraint(equalToConstant: 52).isActive = true
+        
+        timeLabel.rightAnchor.constraint(equalTo: self.rightAnchor).isActive = true
+        timeLabel.topAnchor.constraint(equalTo: self.topAnchor, constant: 20).isActive = true
+        timeLabel.heightAnchor.constraint(equalTo: (textLabel?.heightAnchor)!).isActive = true
+        timeLabel.widthAnchor.constraint(equalToConstant: 100).isActive = true
     }
     
     required init?(coder aDecoder: NSCoder) {
