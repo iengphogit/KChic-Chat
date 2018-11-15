@@ -34,6 +34,13 @@ class UserCell: UITableViewCell {
                         if let profileImageUrl = dictionary["profileImageUrl"] {
                             self.profileImageView.downloadImageWithUrl(url: URL(string: profileImageUrl as! String)!)
                         }
+                        
+                        if let second = self.message?.timestamp {
+                            let date = Date(timeIntervalSince1970: TimeInterval(second))
+                            let dateFormat = DateFormatter()
+                            dateFormat.dateFormat = "HH:mm:ss a"
+                            self.timeLabel.text = dateFormat.string(from: date)
+                        }
                     }
                     
                 }, withCancel: nil)
@@ -57,6 +64,7 @@ class UserCell: UITableViewCell {
     let timeLabel:UILabel = {
         let lbl = UILabel()
         lbl.text = "hh:mm:ss"
+        lbl.font = UIFont.systemFont(ofSize: 12)
         lbl.textColor = UIColor.init(netHex: 0xb2b2b2)
         lbl.translatesAutoresizingMaskIntoConstraints = false
         return lbl
