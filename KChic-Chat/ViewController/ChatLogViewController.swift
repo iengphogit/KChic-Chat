@@ -8,19 +8,46 @@
 
 import UIKit
 import Firebase
-class ChatLogViewController: UICollectionViewController, UITextFieldDelegate {
-
+class ChatLogViewController: UICollectionViewController, UITextFieldDelegate, UICollectionViewDelegateFlowLayout {
+    let cellId = "cellId"
     var user:UserModel?
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         view.backgroundColor = .white
         self.collectionView.backgroundColor = .white
+        self.collectionView.register(UICollectionViewCell.self, forCellWithReuseIdentifier: cellId)
+        
+        let layout: UICollectionViewFlowLayout = UICollectionViewFlowLayout()
+        layout.itemSize = CGSize(width: view.frame.height - 1, height: 20)
+        layout.minimumLineSpacing = 1
+        layout.minimumInteritemSpacing = 0
+//        layout.scrollDirection = .vertical
+        
+        
+        
+        //collectionView.collectionViewLayout = layout
+        collectionView.showsVerticalScrollIndicator = false
         
             navigationItem.title = user?.name ?? "unknow"
         
         setupContainerView()
     }
     
+    override func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
+        return 5
+    }
+    
+    override func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
+        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: cellId, for: indexPath)
+        cell.backgroundColor = UIColor.green
+        return cell
+        
+    }
+    
+    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
+        return CGSize(width: view.frame.height, height: 80)
+    }
     
    lazy var sendBtn:UIButton = {
         let btn = UIButton(type: UIButton.ButtonType.system)
@@ -107,4 +134,9 @@ class ChatLogViewController: UICollectionViewController, UITextFieldDelegate {
         
     }
 
+}
+
+
+extension ChatLogViewController {
+    
 }

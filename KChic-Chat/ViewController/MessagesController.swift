@@ -126,7 +126,7 @@ class MessagesController: UITableViewController {
             }
             
             let user = UserModel()
-            user.id = DataSnapshot.key
+            user.id = chartParnerId
             user.name = dictionary["name"] as? String
             user.username = dictionary["username"] as? String
             user.profileImageUrl = dictionary["profileImageUrl"] as? String
