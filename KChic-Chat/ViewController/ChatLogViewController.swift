@@ -37,7 +37,24 @@ class ChatLogViewController: UICollectionViewController, UITextFieldDelegate {
         let timestamp = Int(NSDate().timeIntervalSince1970)
         let ref = Database.database().reference().child("messages")
         let childRef = ref.childByAutoId()
-        childRef.setValue(["text":messageTextField.text!, "toId": toId, "fromId": fromId, "timestamp": timestamp])
+        let values = ["text":messageTextField.text!, "toId": toId, "fromId": fromId, "timestamp": timestamp] as [String : Any]
+        
+        childRef.updateChildValues(values) { (error, ref) in
+            if let error = error {
+                print(error)
+                return
+            }
+            
+            let userMessagesRef = Database.database().reference().child("user-messages").child(fromId)
+            let messageId = childRef.key
+            userMessagesRef.updateChildValues([messageId: 1])
+            
+            let recipientUserMessagesRef = Database.database().reference().child("user-messages").child(toId)
+            recipientUserMessagesRef.updateChildValues([messageId: 1])
+            
+        }
+        
+        
         messageTextField.text = ""
     }
     

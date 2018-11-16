@@ -23,9 +23,52 @@ class MessagesController: UITableViewController {
         navigationItem.rightBarButtonItem = UIBarButtonItem(image: image, style: .plain, target: self, action: #selector(self.handleNewMessage))
         
         checkIfUserIsLoggedIn()
-        observeMessages()
+        //observeMessages()
         
         tableView.register(UserCell.self, forCellReuseIdentifier: self.cellId)
+    }
+    
+    func observeUserMessages() {
+        guard let uid = Auth.auth().currentUser?.uid else {
+            return
+        }
+        
+        messages.removeAll()
+        messagesDictionary.removeAll()
+        
+        let ref = Database.database().reference().child("user-messages").child(uid)
+        ref.observe(DataEventType.childAdded, with: { (DataSnapshot) in
+            
+            let messageId = DataSnapshot.key
+            let messageReference = Database.database().reference().child("messages").child(messageId)
+            
+            messageReference.observeSingleEvent(of: .value, with: { (DataSnapshot) in
+                
+                if let dictionary = DataSnapshot.value as? [String: AnyObject] {
+                    let msg:MessageModel = MessageModel()
+                    msg.fromId = dictionary["fromId"]! as? String
+                    msg.text = dictionary["text"] as? String
+                    msg.timestamp = dictionary["timestamp"] as? Int
+                    msg.toId = dictionary["toId"] as? String
+                    //self.messages.append(msg)
+                    
+                    self.messagesDictionary[msg.toId!] = msg
+                    self.messages = Array(self.messagesDictionary.values)
+                    
+                    self.messages.sort(by: { (message1, message2) -> Bool in
+                        return message1.timestamp! > message2.timestamp!
+                    })
+                    
+                    DispatchQueue.main.async {
+                        self.tableView.reloadData()
+                    }
+                }
+                
+            }, withCancel: nil)
+            
+        }, withCancel: nil)
+        
+        
     }
     
     func observeMessages(){
@@ -108,6 +151,12 @@ class MessagesController: UITableViewController {
     }
     
     func setupNavBarWithUser(user: UserModel){
+        messages.removeAll()
+        messagesDictionary.removeAll()
+        tableView.reloadData()
+        
+        observeUserMessages()
+        
         let titleView = UIView()
         titleView.frame = CGRect(x: 0, y: 0, width: 100, height: 40)
         titleView.backgroundColor = .red

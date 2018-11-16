@@ -23,32 +23,42 @@ class UserCell: UITableViewCell {
     var message: MessageModel? {
         didSet{
             
+            setNameAndProifleImage()
+            
             self.detailTextLabel?.text = message?.text
-            if let toId = message?.toId {
-                
-                let ref = Database.database().reference().child("users").child(toId)
-                ref.observe(.value, with: { (DataSnapshot) in
-                    if let dictionary = DataSnapshot.value as? [String:AnyObject] {
-                        self.textLabel?.text = dictionary["name"] as? String
-                        
-                        if let profileImageUrl = dictionary["profileImageUrl"] {
-                            self.profileImageView.downloadImageWithUrl(url: URL(string: profileImageUrl as! String)!)
-                        }
-                        
-                        if let second = self.message?.timestamp {
-                            let date = Date(timeIntervalSince1970: TimeInterval(second))
-                            let dateFormat = DateFormatter()
-//                            dateFormat.timeZone = TimeZone(abbreviation: "GMT")
-                            dateFormat.dateFormat = "hh:mm:ss a"
-                            self.timeLabel.text = dateFormat.string(from: date)
-                        }
-                    }
-                    
-                }, withCancel: nil)
-                
-                
+            if let second = self.message?.timestamp {
+                let date = Date(timeIntervalSince1970: TimeInterval(second))
+                let dateFormat = DateFormatter()
+                //                            dateFormat.timeZone = TimeZone(abbreviation: "GMT")
+                dateFormat.dateFormat = "hh:mm:ss a"
+                self.timeLabel.text = dateFormat.string(from: date)
             }
             
+        }
+    }
+    
+    private func setNameAndProifleImage(){
+        let chatPartnerId:String?
+        
+        if message?.fromId == Auth.auth().currentUser?.uid {
+            chatPartnerId = message?.toId
+        }else{
+            chatPartnerId = message?.fromId
+        }
+        
+        if let mId = chatPartnerId {
+            let ref = Database.database().reference().child("users").child(mId)
+            ref.observe(.value, with: { (DataSnapshot) in
+                if let dictionary = DataSnapshot.value as? [String:AnyObject] {
+                    self.textLabel?.text = dictionary["name"] as? String
+                    
+                    if let profileImageUrl = dictionary["profileImageUrl"] {
+                        self.profileImageView.downloadImageWithUrl(url: URL(string: profileImageUrl as! String)!)
+                    }
+                    
+                }
+                
+            }, withCancel: nil)
         }
     }
     
@@ -64,7 +74,7 @@ class UserCell: UITableViewCell {
     
     let timeLabel:UILabel = {
         let lbl = UILabel()
-        lbl.text = "hh:mm:ss"
+//        lbl.text = "hh:mm:ss"
         lbl.font = UIFont.systemFont(ofSize: 12)
         lbl.textColor = UIColor.init(netHex: 0xb2b2b2)
         lbl.translatesAutoresizingMaskIntoConstraints = false
