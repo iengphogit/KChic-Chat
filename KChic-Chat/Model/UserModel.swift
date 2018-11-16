@@ -27,5 +27,5 @@ class UserModel:NSObject {
     
     override convenience init() {
         self.init(name: "", username: "")
-    }
+    } 
 }

@@ -38,15 +38,7 @@ class UserCell: UITableViewCell {
     }
     
     private func setNameAndProifleImage(){
-        let chatPartnerId:String?
-        
-        if message?.fromId == Auth.auth().currentUser?.uid {
-            chatPartnerId = message?.toId
-        }else{
-            chatPartnerId = message?.fromId
-        }
-        
-        if let mId = chatPartnerId {
+        if let mId = message?.chatPartnerId() {
             let ref = Database.database().reference().child("users").child(mId)
             ref.observe(.value, with: { (DataSnapshot) in
                 if let dictionary = DataSnapshot.value as? [String:AnyObject] {
