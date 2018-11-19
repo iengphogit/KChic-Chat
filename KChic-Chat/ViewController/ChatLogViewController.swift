@@ -53,6 +53,7 @@ class ChatLogViewController: UICollectionViewController, UITextFieldDelegate, UI
     override func viewDidLoad() {
         super.viewDidLoad()
         view.backgroundColor = .white
+        self.collectionView.alwaysBounceVertical = true
         self.collectionView.backgroundColor = .white
         self.collectionView.register(ChatMessageCell.self, forCellWithReuseIdentifier: cellId)
         
@@ -66,6 +67,7 @@ class ChatLogViewController: UICollectionViewController, UITextFieldDelegate, UI
     override func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: cellId, for: indexPath) as! ChatMessageCell
         let message = messages[indexPath.row]
+        
         cell.textView.text = message.text
         return cell
     }
