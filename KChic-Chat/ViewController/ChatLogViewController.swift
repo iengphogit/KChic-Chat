@@ -53,6 +53,8 @@ class ChatLogViewController: UICollectionViewController, UITextFieldDelegate, UI
     override func viewDidLoad() {
         super.viewDidLoad()
         view.backgroundColor = .white
+        self.collectionView.contentInset = UIEdgeInsets(top: 8, left: 0, bottom: 58, right: 0)
+        self.collectionView.scrollIndicatorInsets = UIEdgeInsets(top: 0, left: 0, bottom: 58, right: 0)
         self.collectionView.alwaysBounceVertical = true
         self.collectionView.backgroundColor = .white
         self.collectionView.register(ChatMessageCell.self, forCellWithReuseIdentifier: cellId)
@@ -67,15 +69,37 @@ class ChatLogViewController: UICollectionViewController, UITextFieldDelegate, UI
     override func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: cellId, for: indexPath) as! ChatMessageCell
         let message = messages[indexPath.row]
-        
         cell.textView.text = message.text
+        
+        setupCell(cell: cell, message: message)
+        
+        cell.bubbleWidthAnchor?.constant = estimateFrameForText(text: message.text!).width + 32
+        
         return cell
+    }
+    
+    func setupCell(cell: ChatMessageCell, message: MessageModel){
+        if message.fromId == Auth.auth().currentUser?.uid {
+            cell.bubbleView.backgroundColor = ChatMessageCell.blueColor
+            cell.textView.textColor = UIColor.white
+            cell.profileImageView.isHidden = true
+            
+            cell.bubbleRightAnchor?.isActive = true
+            cell.bubbleLeftAnchor?.isActive = false
+        }else{
+            cell.bubbleView.backgroundColor = UIColor.init(netHex: 0xf0f0f0)
+            cell.textView.textColor = UIColor.black
+            cell.profileImageView.isHidden = false
+            
+            cell.bubbleRightAnchor?.isActive = false
+            cell.bubbleLeftAnchor?.isActive = true
+        }
     }
     
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
         var height:CGFloat = 80
         if let text = messages[indexPath.row].text {
-            height = self.estimateFrameForText(text: text).height
+            height = self.estimateFrameForText(text: text).height + 20
         }
         return CGSize(width: view.frame.width, height: height)
     }
@@ -109,6 +133,7 @@ class ChatLogViewController: UICollectionViewController, UITextFieldDelegate, UI
                 return
             }
             
+            self.messageTextField.text = nil
             let userMessagesRef = Database.database().reference().child("user-messages").child(fromId)
             let messageId = childRef.key
             userMessagesRef.updateChildValues([messageId: 1])
@@ -119,7 +144,7 @@ class ChatLogViewController: UICollectionViewController, UITextFieldDelegate, UI
         }
         
         
-        messageTextField.text = ""
+        
     }
     
     lazy var messageTextField:UITextField = {
@@ -142,9 +167,18 @@ class ChatLogViewController: UICollectionViewController, UITextFieldDelegate, UI
         return line
     }()
     
+    let footerView:UIView = {
+        let view = UIView()
+        view.backgroundColor = UIColor.init(netHex: 0xdbffe1)
+        view.translatesAutoresizingMaskIntoConstraints = false
+        return view
+    }()
+    
     func setupContainerView(){
         let containerView = UIView()
+        view.addSubview(footerView)
         view.addSubview(containerView)
+        containerView.backgroundColor = UIColor.white
         containerView.translatesAutoresizingMaskIntoConstraints = false
         
         containerView.leftAnchor.constraint(equalTo: self.view.safeAreaLayoutGuide.leftAnchor).isActive = true
@@ -168,6 +202,13 @@ class ChatLogViewController: UICollectionViewController, UITextFieldDelegate, UI
         separatorLineView.topAnchor.constraint(equalTo: containerView.topAnchor).isActive = true
         separatorLineView.widthAnchor.constraint(equalTo: containerView.widthAnchor).isActive = true
         separatorLineView.heightAnchor.constraint(equalToConstant: 1).isActive = true
+        
+        
+        //FooterView Constraint
+        footerView.topAnchor.constraint(equalTo: containerView.bottomAnchor).isActive = true
+        footerView.bottomAnchor.constraint(equalTo: self.view.bottomAnchor).isActive = true
+        footerView.leadingAnchor.constraint(equalTo: self.view.leadingAnchor).isActive = true
+        footerView.trailingAnchor.constraint(equalTo: self.view.trailingAnchor).isActive = true
         
     }
 
