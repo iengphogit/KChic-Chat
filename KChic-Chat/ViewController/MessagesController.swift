@@ -52,12 +52,20 @@ class MessagesController: UITableViewController {
                     msg.toId = dictionary["toId"] as? String
                     //self.messages.append(msg)
                     
-                    self.messagesDictionary[msg.toId!] = msg
+                    self.messagesDictionary[msg.chatPartnerId()!] = msg
                     self.messages = Array(self.messagesDictionary.values)
                     
                     self.messages.sort(by: { (message1, message2) -> Bool in
                         return message1.timestamp! > message2.timestamp!
                     })
+                    
+                    /*
+                    self.timer?.invalidate()
+                                    print("just canceled our timer")
+                    self.timer? = Timer.scheduledTimer(timeInterval: 0.1, target: self, selector: #selector(self.handleReloadTable), userInfo: nil, repeats: false)
+                                    print("schedule is a table reload in 0.1 sec")
+ 
+                    */
                     
                     DispatchQueue.main.async {
                         self.tableView.reloadData()
@@ -71,36 +79,10 @@ class MessagesController: UITableViewController {
         
     }
     
-    func observeMessages(){
-    
-        let ref = Database.database().reference().child("messages")
-        ref.observe(.childAdded, with: { (DataSnapshot) in
-            
-            print(DataSnapshot)
-            
-            if let dictionary = DataSnapshot.value as? [String: AnyObject] {
-                let msg:MessageModel = MessageModel()
-                msg.fromId = dictionary["fromId"]! as? String
-                msg.text = dictionary["text"] as? String
-                msg.timestamp = dictionary["timestamp"] as? Int
-                msg.toId = dictionary["toId"] as? String
-                //self.messages.append(msg)
-                
-                self.messagesDictionary[msg.toId!] = msg
-                self.messages = Array(self.messagesDictionary.values)
-                
-                self.messages.sort(by: { (message1, message2) -> Bool in
-                    return message1.timestamp! > message2.timestamp!
-                })
-                
-                DispatchQueue.main.async {
-                    self.tableView.reloadData()
-                }
-            }
-            
-            
-        }) { (Error) in
-            print(Error.localizedDescription)
+    var timer: Timer?
+    @objc func handleReloadTable() {
+        DispatchQueue.main.async {
+            self.tableView.reloadData()
         }
     }
     

@@ -60,6 +60,22 @@ class ChatLogViewController: UICollectionViewController, UITextFieldDelegate, UI
         self.collectionView.register(ChatMessageCell.self, forCellWithReuseIdentifier: cellId)
         
         setupContainerView()
+        setupKeybaordservers()
+    }
+    
+    func setupKeybaordservers() {
+        NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillShow), name: UIResponder.keyboardWillShowNotification, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(keybaordWillHide), name: UIResponder.keyboardWillHideNotification, object: nil)
+    }
+    
+    @objc
+    func keyboardWillShow(){
+        print("keyboardWillShow")
+    }
+    
+    @objc
+    func keybaordWillHide(){
+        print("keybaordWillHide")
     }
     
     override func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
@@ -79,6 +95,10 @@ class ChatLogViewController: UICollectionViewController, UITextFieldDelegate, UI
     }
     
     func setupCell(cell: ChatMessageCell, message: MessageModel){
+        if let profileImageUrl = self.user?.profileImageUrl {
+            cell.profileImageView.downloadImageWithUrl(url: URL(string: profileImageUrl)! )
+        }
+        
         if message.fromId == Auth.auth().currentUser?.uid {
             cell.bubbleView.backgroundColor = ChatMessageCell.blueColor
             cell.textView.textColor = UIColor.white
