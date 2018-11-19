@@ -73,7 +73,17 @@ class ChatLogViewController: UICollectionViewController, UITextFieldDelegate, UI
     }
     
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
-        return CGSize(width: view.frame.width, height: 80)
+        var height:CGFloat = 80
+        if let text = messages[indexPath.row].text {
+            height = self.estimateFrameForText(text: text).height
+        }
+        return CGSize(width: view.frame.width, height: height)
+    }
+    
+    private func estimateFrameForText(text: String) -> CGRect {
+        let size =  CGSize(width: 200, height: 1000)
+        let options = NSStringDrawingOptions.usesFontLeading.union(.usesLineFragmentOrigin)
+        return NSString(string: text).boundingRect(with: size, options: options, attributes: [NSAttributedString.Key.font: UIFont.systemFont(ofSize: 16)], context: nil)
     }
     
    lazy var sendBtn:UIButton = {
