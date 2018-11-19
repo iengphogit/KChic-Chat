@@ -23,6 +23,7 @@
 		C22B9E1221997813004AFA0A /* NewMessageController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C22B9E1121997813004AFA0A /* NewMessageController.swift */; };
 		C22B9E1521997B71004AFA0A /* UserModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = C22B9E1421997B71004AFA0A /* UserModel.swift */; };
 		C22B9E1721998159004AFA0A /* TestClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = C22B9E1621998159004AFA0A /* TestClass.swift */; };
+		C28BE9E1219EC67600BE7B38 /* ChatMessageCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = C28BE9E0219EC67600BE7B38 /* ChatMessageCell.swift */; };
 		C2DA18E5219BCE1200350D4D /* UIImageExt.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2DA18E4219BCE1200350D4D /* UIImageExt.swift */; };
 		C2DA18E7219D046A00350D4D /* ChatLogViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2DA18E6219D046A00350D4D /* ChatLogViewController.swift */; };
 		C2DA18E9219D507F00350D4D /* MessageModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2DA18E8219D507F00350D4D /* MessageModel.swift */; };
@@ -50,6 +51,7 @@
 		C22B9E1121997813004AFA0A /* NewMessageController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NewMessageController.swift; sourceTree = "<group>"; };
 		C22B9E1421997B71004AFA0A /* UserModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserModel.swift; sourceTree = "<group>"; };
 		C22B9E1621998159004AFA0A /* TestClass.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TestClass.swift; sourceTree = "<group>"; };
+		C28BE9E0219EC67600BE7B38 /* ChatMessageCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatMessageCell.swift; sourceTree = "<group>"; };
 		C2DA18E4219BCE1200350D4D /* UIImageExt.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UIImageExt.swift; sourceTree = "<group>"; };
 		C2DA18E6219D046A00350D4D /* ChatLogViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatLogViewController.swift; sourceTree = "<group>"; };
 		C2DA18E8219D507F00350D4D /* MessageModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MessageModel.swift; sourceTree = "<group>"; };
@@ -184,6 +186,7 @@
 			isa = PBXGroup;
 			children = (
 				C2DA18EB219D588400350D4D /* UserCell.swift */,
+				C28BE9E0219EC67600BE7B38 /* ChatMessageCell.swift */,
 			);
 			path = View;
 			sourceTree = "<group>";
@@ -347,6 +350,7 @@
 				C201A9A721949914004E43D6 /* AppDelegate.swift in Sources */,
 				C201A9CF21957177004E43D6 /* SpinnerViewController.swift in Sources */,
 				C22B9E1521997B71004AFA0A /* UserModel.swift in Sources */,
+				C28BE9E1219EC67600BE7B38 /* ChatMessageCell.swift in Sources */,
 				C201A9C621953BD1004E43D6 /* SignUpViewController.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
