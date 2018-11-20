@@ -36,7 +36,7 @@ class ChatLogViewController: UICollectionViewController, UITextFieldDelegate, UI
                 message.fromId = dictionary["fromId"] as? String
                 message.toId = dictionary["toId"] as? String
                 message.timestamp = dictionary["timestamp"] as? Int
-                
+                print(message)
                 if message.chatPartnerId() == self.user?.id {
                     self.messages.append(message)
                     DispatchQueue.main.async {
