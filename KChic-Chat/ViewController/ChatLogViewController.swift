@@ -60,8 +60,65 @@ class ChatLogViewController: UICollectionViewController, UITextFieldDelegate, UI
         self.collectionView.register(ChatMessageCell.self, forCellWithReuseIdentifier: cellId)
         self.collectionView.keyboardDismissMode = .interactive
         
-        setupContainerView()
-        setupKeybaordservers()
+//        setupContainerView()
+//        setupKeybaordservers()
+    }
+    
+    lazy var inputContainerView: UIView = {
+        
+//        let viewH = view.frame.height
+//        let viewSafeH = view.safeAreaLayoutGuide.layoutFrame.size.height
+//        let mHeight: CGFloat = viewH - viewSafeH
+//
+//        let rootView = UIView()
+//        rootView.frame = CGRect(x: 0, y: 0, width: view.frame.width, height: 50 )
+//        rootView.backgroundColor = UIColor.red
+//
+//        let stackVerticalStackView = UIStackView()
+//        rootView.addSubview(stackVerticalStackView)
+//        stackVerticalStackView.axis = .vertical
+//        stackVerticalStackView.backgroundColor = UIColor.green
+//        stackVerticalStackView.frame = CGRect(x: 0, y: 0, width: rootView.frame.width, height: 50)
+//
+//        let footerView = UIView()
+//        stackVerticalStackView.addArrangedSubview(footerView)
+//
+//        footerView.frame = CGRect(x: 0, y: 0, width: view.frame.width, height: mHeight)
+//        footerView.backgroundColor = UIColor.green
+        
+        let containerView = UIView()
+//        stackVerticalStackView.addArrangedSubview(containerView)
+        containerView.frame = CGRect(x: 0, y: 0, width: view.frame.width, height: 50)
+        containerView.backgroundColor = UIColor.white
+        containerView.addSubview(sendBtn)
+        sendBtn.centerYAnchor.constraint(equalTo: containerView.centerYAnchor).isActive = true
+        sendBtn.rightAnchor.constraint(equalTo: containerView.rightAnchor, constant: -8).isActive = true
+        sendBtn.widthAnchor.constraint(equalToConstant: 80).isActive = true
+        
+        containerView.addSubview(messageTextField)
+        
+        messageTextField.leftAnchor.constraint(equalTo: containerView.leftAnchor, constant: 16).isActive = true
+        messageTextField.heightAnchor.constraint(equalTo: containerView.heightAnchor).isActive = true
+        messageTextField.heightAnchor.constraint(equalToConstant: 50).isActive = true
+        messageTextField.rightAnchor.constraint(equalTo: sendBtn.leftAnchor).isActive = true
+        
+        containerView.addSubview(separatorLineView)
+        separatorLineView.leftAnchor.constraint(equalTo: containerView.leftAnchor, constant: 0).isActive = true
+        separatorLineView.topAnchor.constraint(equalTo: containerView.topAnchor).isActive = true
+        separatorLineView.widthAnchor.constraint(equalTo: containerView.widthAnchor).isActive = true
+        separatorLineView.heightAnchor.constraint(equalToConstant: 1).isActive = true
+        
+        return containerView
+    }()
+    
+    override var inputAccessoryView: UIView? {
+        get{
+            return inputContainerView
+        }
+    }
+    
+    override var canBecomeFirstResponder: Bool {
+        return true
     }
     
     override func viewWillDisappear(_ animated: Bool) {
