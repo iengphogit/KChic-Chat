@@ -66,28 +66,7 @@ class ChatLogViewController: UICollectionViewController, UITextFieldDelegate, UI
     
     lazy var inputContainerView: UIView = {
         
-//        let viewH = view.frame.height
-//        let viewSafeH = view.safeAreaLayoutGuide.layoutFrame.size.height
-//        let mHeight: CGFloat = viewH - viewSafeH
-//
-//        let rootView = UIView()
-//        rootView.frame = CGRect(x: 0, y: 0, width: view.frame.width, height: 50 )
-//        rootView.backgroundColor = UIColor.red
-//
-//        let stackVerticalStackView = UIStackView()
-//        rootView.addSubview(stackVerticalStackView)
-//        stackVerticalStackView.axis = .vertical
-//        stackVerticalStackView.backgroundColor = UIColor.green
-//        stackVerticalStackView.frame = CGRect(x: 0, y: 0, width: rootView.frame.width, height: 50)
-//
-//        let footerView = UIView()
-//        stackVerticalStackView.addArrangedSubview(footerView)
-//
-//        footerView.frame = CGRect(x: 0, y: 0, width: view.frame.width, height: mHeight)
-//        footerView.backgroundColor = UIColor.green
-        
         let containerView = UIView()
-//        stackVerticalStackView.addArrangedSubview(containerView)
         containerView.frame = CGRect(x: 0, y: 0, width: view.frame.width, height: 50)
         containerView.backgroundColor = UIColor.white
         containerView.addSubview(sendBtn)
