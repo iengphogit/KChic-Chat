@@ -64,18 +64,39 @@ class ChatLogViewController: UICollectionViewController, UITextFieldDelegate, UI
     }
     
     func setupKeybaordservers() {
-        NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillShow), name: UIResponder.keyboardWillShowNotification, object: nil)
+       NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillShow), name: UIResponder.keyboardWillShowNotification, object: nil)
         NotificationCenter.default.addObserver(self, selector: #selector(keybaordWillHide), name: UIResponder.keyboardWillHideNotification, object: nil)
     }
     
     @objc
-    func keyboardWillShow(){
+    func keyboardWillShow(notification: NSNotification){
         print("keyboardWillShow")
+        
+        if let keyboardFrame: NSValue = notification.userInfo?[UIResponder.keyboardFrameEndUserInfoKey] as? NSValue,
+            let keyboardDuration = notification.userInfo?[UIResponder.keyboardAnimationDurationUserInfoKey] {
+            let keyboardRectangle = keyboardFrame.cgRectValue
+            let keyboardHeight = keyboardRectangle.height
+            
+            containerViewBottomAnchor?.constant = -keyboardHeight
+            
+            UIView.animate(withDuration: keyboardDuration as! Double) {
+                self.view.layoutIfNeeded()
+            }
+            
+            
+        }
     }
     
     @objc
-    func keybaordWillHide(){
+    func keybaordWillHide(notification: NSNotification){
         print("keybaordWillHide")
+        containerViewBottomAnchor?.constant = 0
+        
+        if let keyboardDuration = notification.userInfo?[UIResponder.keyboardAnimationDurationUserInfoKey] {
+            UIView.animate(withDuration: keyboardDuration as! Double) {
+                self.view.layoutIfNeeded()
+            }
+        }
     }
     
     override func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
@@ -194,6 +215,7 @@ class ChatLogViewController: UICollectionViewController, UITextFieldDelegate, UI
         return view
     }()
     
+    var containerViewBottomAnchor: NSLayoutConstraint?
     func setupContainerView(){
         let containerView = UIView()
         view.addSubview(footerView)
@@ -202,7 +224,8 @@ class ChatLogViewController: UICollectionViewController, UITextFieldDelegate, UI
         containerView.translatesAutoresizingMaskIntoConstraints = false
         
         containerView.leftAnchor.constraint(equalTo: self.view.safeAreaLayoutGuide.leftAnchor).isActive = true
-        containerView.bottomAnchor.constraint(equalTo: self.view.safeAreaLayoutGuide.bottomAnchor).isActive = true
+        containerViewBottomAnchor = containerView.bottomAnchor.constraint(equalTo: self.view.safeAreaLayoutGuide.bottomAnchor)
+        containerViewBottomAnchor?.isActive = true
         containerView.heightAnchor.constraint(equalToConstant: 50).isActive = true
         containerView.widthAnchor.constraint(equalTo: self.view.safeAreaLayoutGuide.widthAnchor).isActive = true
         
