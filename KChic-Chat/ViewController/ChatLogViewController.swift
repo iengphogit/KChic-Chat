@@ -58,9 +58,15 @@ class ChatLogViewController: UICollectionViewController, UITextFieldDelegate, UI
         self.collectionView.alwaysBounceVertical = true
         self.collectionView.backgroundColor = .white
         self.collectionView.register(ChatMessageCell.self, forCellWithReuseIdentifier: cellId)
+        self.collectionView.keyboardDismissMode = .interactive
         
         setupContainerView()
         setupKeybaordservers()
+    }
+    
+    override func viewWillDisappear(_ animated: Bool) {
+        super.viewDidDisappear(animated)
+        NotificationCenter.default.removeObserver(self)
     }
     
     func setupKeybaordservers() {
