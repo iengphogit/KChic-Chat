@@ -53,8 +53,8 @@ class ChatLogViewController: UICollectionViewController, UITextFieldDelegate, UI
     override func viewDidLoad() {
         super.viewDidLoad()
         view.backgroundColor = .white
-        self.collectionView.contentInset = UIEdgeInsets(top: 8, left: 0, bottom: 58, right: 0)
-        self.collectionView.scrollIndicatorInsets = UIEdgeInsets(top: 0, left: 0, bottom: 58, right: 0)
+        self.collectionView.contentInset = UIEdgeInsets(top: 8, left: 0, bottom: 8, right: 0)
+//        self.collectionView.scrollIndicatorInsets = UIEdgeInsets(top: 0, left: 0, bottom: 58, right: 0)
         self.collectionView.alwaysBounceVertical = true
         self.collectionView.backgroundColor = .white
         self.collectionView.register(ChatMessageCell.self, forCellWithReuseIdentifier: cellId)
@@ -103,6 +103,10 @@ class ChatLogViewController: UICollectionViewController, UITextFieldDelegate, UI
     override func viewWillDisappear(_ animated: Bool) {
         super.viewDidDisappear(animated)
         NotificationCenter.default.removeObserver(self)
+    }
+    
+    override func viewWillTransition(to size: CGSize, with coordinator: UIViewControllerTransitionCoordinator) {
+        self.collectionView.collectionViewLayout.invalidateLayout()
     }
     
     func setupKeybaordservers() {
@@ -184,7 +188,9 @@ class ChatLogViewController: UICollectionViewController, UITextFieldDelegate, UI
         if let text = messages[indexPath.row].text {
             height = self.estimateFrameForText(text: text).height + 20
         }
-        return CGSize(width: view.frame.width, height: height)
+        
+        let width = UIScreen.main.bounds.width
+        return CGSize(width: width, height: height)
     }
     
     private func estimateFrameForText(text: String) -> CGRect {
