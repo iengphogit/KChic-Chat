@@ -39,43 +39,56 @@ class MessagesController: UITableViewController {
         let ref = Database.database().reference().child("user-messages").child(uid)
         ref.observe(DataEventType.childAdded, with: { (DataSnapshot) in
             
-            let messageId = DataSnapshot.key
-            let messageReference = Database.database().reference().child("messages").child(messageId)
+            let userId = DataSnapshot.key
             
-            messageReference.observeSingleEvent(of: .value, with: { (DataSnapshot) in
+            
+            Database.database().reference().child("user-messages").child(uid).child(userId).observe(.childAdded, with: { (DataSnapshot) in
                 
-                if let dictionary = DataSnapshot.value as? [String: AnyObject] {
-                    let msg:MessageModel = MessageModel()
-                    msg.fromId = dictionary["fromId"]! as? String
-                    msg.text = dictionary["text"] as? String
-                    msg.timestamp = dictionary["timestamp"] as? Int
-                    msg.toId = dictionary["toId"] as? String
-                    //self.messages.append(msg)
+                let messageId = DataSnapshot.key
+                
+                let messageReference = Database.database().reference().child("messages").child(messageId)
+                
+                messageReference.observeSingleEvent(of: .value, with: { (DataSnapshot) in
                     
-                    self.messagesDictionary[msg.chatPartnerId()!] = msg
-                    self.messages = Array(self.messagesDictionary.values)
-                    
-                    self.messages.sort(by: { (message1, message2) -> Bool in
-                        return message1.timestamp! > message2.timestamp!
-                    })
-                    
-                    /*
-                    self.timer?.invalidate()
-                                    print("just canceled our timer")
-                    self.timer? = Timer.scheduledTimer(timeInterval: 0.1, target: self, selector: #selector(self.handleReloadTable), userInfo: nil, repeats: false)
-                                    print("schedule is a table reload in 0.1 sec")
- 
-                    */
-                    
-                    DispatchQueue.main.async {
-                        self.tableView.reloadData()
+                    if let dictionary = DataSnapshot.value as? [String: AnyObject] {
+                        let msg:MessageModel = MessageModel()
+                        msg.fromId = dictionary["fromId"]! as? String
+                        msg.text = dictionary["text"] as? String
+                        msg.timestamp = dictionary["timestamp"] as? Int
+                        msg.toId = dictionary["toId"] as? String
+                        //self.messages.append(msg)
+                        
+                        self.messagesDictionary[msg.chatPartnerId()!] = msg
+                        self.messages = Array(self.messagesDictionary.values)
+                        
+                        self.messages.sort(by: { (message1, message2) -> Bool in
+                            return message1.timestamp! > message2.timestamp!
+                        })
+                        self.attemptReloadOfTable()
                     }
-                }
+                    
+                }, withCancel: nil)
                 
             }, withCancel: nil)
             
         }, withCancel: nil)
         
+        
+    }
+    
+    func attemptReloadOfTable(){
+        
+        /*
+         self.timer?.invalidate()
+         print("just canceled our timer")
+         self.timer? = Timer.scheduledTimer(timeInterval: 0.1, target: self, selector: #selector(self.handleReloadTable), userInfo: nil, repeats: false)
+         print("schedule is a table reload in 0.1 sec")
+         
+         */
+        
+        DispatchQueue.main.async {
+            self.tableView.reloadData()
+        }
         
     }
     
@@ -142,7 +155,7 @@ class MessagesController: UITableViewController {
         Database.database().reference().child("users").child(uid).observe(DataEventType.value, with: { (DataSnapshot) in
             
             if let dictionary = DataSnapshot.value as? [String: AnyObject] {
-//                self.navigationItem.title = dictionary["name"] as? String
+                //                self.navigationItem.title = dictionary["name"] as? String
                 
                 let user = UserModel()
                 user.id = DataSnapshot.key
@@ -200,18 +213,18 @@ class MessagesController: UITableViewController {
         stackView.addArrangedSubview(profileTitle)
         profileTitle.text = user.name
         profileTitle.numberOfLines = 1
-//        profileTitle.lineBreakMode = .byWordWrapping
+        //        profileTitle.lineBreakMode = .byWordWrapping
         
         /*
          
-        let tap = UITapGestureRecognizer(target: self, action: #selector(self.showChatController))
-        profileTitle.isUserInteractionEnabled = true
-        profileTitle.addGestureRecognizer(tap)
-        
-        self.navigationController?.view.addGestureRecognizer(tap)
-        self.navigationController?.navigationBar.addGestureRecognizer(tap)
- 
-        */
+         let tap = UITapGestureRecognizer(target: self, action: #selector(self.showChatController))
+         profileTitle.isUserInteractionEnabled = true
+         profileTitle.addGestureRecognizer(tap)
+         
+         self.navigationController?.view.addGestureRecognizer(tap)
+         self.navigationController?.navigationBar.addGestureRecognizer(tap)
+         
+         */
         
         self.navigationItem.titleView = titleView
         
@@ -241,7 +254,7 @@ class MessagesController: UITableViewController {
         }
     }
     
-
-
+    
+    
 }
 
