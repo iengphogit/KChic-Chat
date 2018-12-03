@@ -69,6 +69,34 @@ class ChatLogViewController: UICollectionViewController, UITextFieldDelegate, UI
 //        setupKeybaordservers()
     }
     
+    lazy var recorderImg: UIImageView = {
+        let imgView = UIImageView()
+        imgView.image = UIImage(named: "microphone")
+        imgView.isUserInteractionEnabled = true
+        let tapGesture = UITapGestureRecognizer(target: self, action: #selector(normalTap))
+        imgView.addGestureRecognizer(tapGesture)
+        
+        let longGesutre = UILongPressGestureRecognizer(target: self, action: #selector(longTap))
+        imgView.addGestureRecognizer(longGesutre)
+        
+        imgView.translatesAutoresizingMaskIntoConstraints = false
+        return imgView
+    }()
+    
+    @objc func normalTap(_ sender: UIGestureRecognizer){
+        print("normalTap")
+    }
+    
+    @objc func longTap(_ sender: UIGestureRecognizer){
+        if ( sender.state == .began){
+            //start tap gesture
+            print("longTap began")
+        }else if (sender.state == .ended) {
+            //ending tap gesture
+            print("longTap ended")
+        }
+    }
+    
     lazy var inputContainerView: UIView = {
         
         let containerView = UIView()
@@ -80,10 +108,17 @@ class ChatLogViewController: UICollectionViewController, UITextFieldDelegate, UI
         sendBtn.widthAnchor.constraint(equalToConstant: 80).isActive = true
         containerView.addSubview(messageTextField)
         
-        messageTextField.leftAnchor.constraint(equalTo: containerView.leftAnchor, constant: 16).isActive = true
+        containerView.addSubview(recorderImg)
+        recorderImg.widthAnchor.constraint(equalToConstant: 32).isActive = true
+        recorderImg.heightAnchor.constraint(equalToConstant: 32).isActive = true
+        recorderImg.leftAnchor.constraint(equalTo: containerView.leftAnchor, constant: 16).isActive = true
+        recorderImg.centerYAnchor.constraint(equalTo: containerView.centerYAnchor).isActive = true
+        
+        messageTextField.leftAnchor.constraint(equalTo: recorderImg.rightAnchor , constant: 16).isActive = true
         messageTextField.heightAnchor.constraint(equalTo: containerView.heightAnchor).isActive = true
         messageTextField.heightAnchor.constraint(equalToConstant: 50).isActive = true
         messageTextField.rightAnchor.constraint(equalTo: sendBtn.leftAnchor).isActive = true
+        
         
         containerView.addSubview(separatorLineView)
         separatorLineView.leftAnchor.constraint(equalTo: containerView.leftAnchor, constant: 0).isActive = true
