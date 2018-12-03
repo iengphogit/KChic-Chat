@@ -13,6 +13,8 @@ class MessageModel: NSObject {
     var text:String?
     var timestamp:Int?
     var toId:String?
+    var voiceUrl:String?
+    var duration:Double?
     
     func chatPartnerId() -> String? {
         return fromId == Auth.auth().currentUser?.uid ?  toId :  fromId

@@ -8,8 +8,12 @@
 
 import UIKit
 import Firebase
-class ChatLogViewController: UICollectionViewController, UITextFieldDelegate, UICollectionViewDelegateFlowLayout {
+import AVFoundation
+class ChatLogViewController: UICollectionViewController, UITextFieldDelegate, UICollectionViewDelegateFlowLayout, AVAudioRecorderDelegate, AVAudioPlayerDelegate {
     let cellId = "cellId"
+    let fileName:String = "audioFile.m4a"
+    var soundRecorder: AVAudioRecorder!
+    var soundPlayer: AVAudioPlayer!
     var user:UserModel? {
         didSet{
             navigationItem.title = user?.name ?? "unknow"
@@ -37,14 +41,16 @@ class ChatLogViewController: UICollectionViewController, UITextFieldDelegate, UI
         let messageRef = Database.database().reference().child("messages").child(messageId)
         messageRef.observeSingleEvent(of: DataEventType.value, with: { (messagesSnapshot) in
             
-            guard let dictionary = messagesSnapshot.value as? [String: AnyObject] else {return}
+            guard let dictionary = messagesSnapshot.value as? [String: AnyObject] else { return }
             
             let message = MessageModel()
             message.text = dictionary["text"] as? String
             message.fromId = dictionary["fromId"] as? String
             message.toId = dictionary["toId"] as? String
             message.timestamp = dictionary["timestamp"] as? Int
-            print(message)
+            message.voiceUrl =  dictionary["voiceUrl"] as? String
+            message.duration = dictionary["duration"] as? Double
+            
             if message.chatPartnerId() == self.user?.id {
                 self.messages.append(message)
                 DispatchQueue.main.async {
@@ -59,15 +65,111 @@ class ChatLogViewController: UICollectionViewController, UITextFieldDelegate, UI
         super.viewDidLoad()
         view.backgroundColor = .white
         self.collectionView.contentInset = UIEdgeInsets(top: 8, left: 0, bottom: 8, right: 0)
-//        self.collectionView.scrollIndicatorInsets = UIEdgeInsets(top: 0, left: 0, bottom: 58, right: 0)
+        //        self.collectionView.scrollIndicatorInsets = UIEdgeInsets(top: 0, left: 0, bottom: 58, right: 0)
         self.collectionView.alwaysBounceVertical = true
         self.collectionView.backgroundColor = .white
         self.collectionView.register(ChatMessageCell.self, forCellWithReuseIdentifier: cellId)
         self.collectionView.keyboardDismissMode = .interactive
         
-//        setupContainerView()
-//        setupKeybaordservers()
+        //        setupContainerView()
+        //        setupKeybaordservers()
+        
+        setupRecorder()
     }
+    
+    
+    func getDocumentDirection() -> URL{
+        let paths = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask)
+        return paths[0]
+    }
+    
+    func setupRecorder(){
+        let audioFilename = getDocumentDirection().appendingPathComponent(fileName)
+        let recorderString = [AVFormatIDKey: kAudioFormatAppleLossless,
+                              AVEncoderAudioQualityKey: AVAudioQuality.max.rawValue,
+                              AVEncoderBitRateKey: 320000,
+                              AVNumberOfChannelsKey: 2,
+                              AVSampleRateKey: 44100.2] as [String:Any]
+        do{
+            soundRecorder = try AVAudioRecorder(url: audioFilename, settings: recorderString)
+            soundRecorder.delegate = self
+            soundRecorder.prepareToRecord()
+        }catch{
+            print(error)
+        }
+    }
+    
+    func setupPlayer(){
+        let audioFilename = getDocumentDirection().appendingPathComponent(fileName)
+        do{
+            soundPlayer = try AVAudioPlayer(contentsOf: audioFilename)
+            soundPlayer.delegate = self
+            soundPlayer.prepareToPlay()
+            soundPlayer.volume = 5.0
+        }catch{
+            print(error)
+        }
+    }
+    
+    func audioRecorderDidFinishRecording(_ recorder: AVAudioRecorder, successfully flag: Bool) {
+        let audioFilename = getDocumentDirection().appendingPathComponent(fileName)
+        
+        let voiceName = NSUUID().uuidString + ".m4a"
+        let ref = Storage.storage().reference().child("message-voices").child(voiceName)
+        //        guard let data = NSData(contentsOf: audioFilename) else {
+        //            return
+        //        }
+        ref.putFile(from: audioFilename, metadata: nil) { (rMetadata, rError) in
+            if rError != nil {
+                print("Failed")
+            }
+            
+            print("Success!")
+            
+            self.sendMessageVoiceHandler(voiceName)
+            
+        }
+    }
+    
+    func sendMessageVoiceHandler(_ voiceName:String) {
+        let toId = user!.id!
+        let fromId = Auth.auth().currentUser?.uid ?? ""
+        let timestamp = Int(NSDate().timeIntervalSince1970)
+        let ref = Database.database().reference().child("messages")
+        let childRef = ref.childByAutoId()
+        do{
+         soundPlayer = try AVAudioPlayer(contentsOf: getDocumentDirection().appendingPathComponent(fileName))
+        }catch{
+            print(error)
+        }
+        
+        let values = ["voiceUrl": voiceName, "toId": toId, "fromId": fromId, "timestamp": timestamp, "duration": soundPlayer.duration] as [String : Any]
+        
+        childRef.updateChildValues(values) { (error, ref) in
+            if let error = error {
+                print(error)
+                return
+            }
+            
+            self.messageTextField.text = nil
+            let userMessagesRef = Database.database().reference().child("user-messages").child(fromId).child(toId)
+            let messageId = childRef.key
+            userMessagesRef.updateChildValues([messageId: 1])
+            
+            let recipientUserMessagesRef = Database.database().reference().child("user-messages").child(toId).child(fromId)
+            recipientUserMessagesRef.updateChildValues([messageId: 1])
+            
+        }
+        
+        
+        
+    }
+    
+    func audioPlayerDidFinishPlaying(_ player: AVAudioPlayer, successfully flag: Bool) {
+        
+    }
+    
+    
     
     lazy var recorderImg: UIImageView = {
         let imgView = UIImageView()
@@ -88,13 +190,24 @@ class ChatLogViewController: UICollectionViewController, UITextFieldDelegate, UI
     }
     
     @objc func longTap(_ sender: UIGestureRecognizer){
+        guard let soundRec = soundRecorder else {return}
+        
         if ( sender.state == .began){
             //start tap gesture
             print("longTap began")
+            soundRec.record()
         }else if (sender.state == .ended) {
             //ending tap gesture
             print("longTap ended")
+            soundRec.stop()
+            let audioSession = AVAudioSession.sharedInstance()
+            try! audioSession.setActive(false)
+            self.sendAudioDataToFirebase()
         }
+    }
+    
+    func sendAudioDataToFirebase(){
+        
     }
     
     lazy var inputContainerView: UIView = {
@@ -149,7 +262,7 @@ class ChatLogViewController: UICollectionViewController, UITextFieldDelegate, UI
     }
     
     func setupKeybaordservers() {
-       NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillShow), name: UIResponder.keyboardWillShowNotification, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillShow), name: UIResponder.keyboardWillShowNotification, object: nil)
         NotificationCenter.default.addObserver(self, selector: #selector(keybaordWillHide), name: UIResponder.keyboardWillHideNotification, object: nil)
     }
     
@@ -194,9 +307,9 @@ class ChatLogViewController: UICollectionViewController, UITextFieldDelegate, UI
         cell.textView.text = message.text
         
         setupCell(cell: cell, message: message)
-        
-        cell.bubbleWidthAnchor?.constant = estimateFrameForText(text: message.text!).width + 32
-        
+        if let message = message.text {
+            cell.bubbleWidthAnchor?.constant = estimateFrameForText(text: message).width + 32
+        }
         return cell
     }
     
@@ -220,6 +333,31 @@ class ChatLogViewController: UICollectionViewController, UITextFieldDelegate, UI
             cell.bubbleRightAnchor?.isActive = false
             cell.bubbleLeftAnchor?.isActive = true
         }
+        
+        
+        if let voiceUrl = message.voiceUrl {
+            cell.voicePlayer.isHidden = false
+            cell.bubbleHeightAnchor?.constant = -40
+            cell.textView.isHidden = true
+            guard let duration = message.duration else {
+                return
+            }
+            let maxLenght = 200.00
+            if duration <= 40 {
+                cell.bubbleWidthAnchor?.constant = CGFloat(((maxLenght * (2/3)) + duration))
+            }else if duration <= 20 {
+                cell.bubbleWidthAnchor?.constant = CGFloat(((maxLenght / 3) + duration))
+            }else{
+                let widthNum = (maxLenght * duration) / 60
+                cell.bubbleWidthAnchor?.constant = CGFloat(widthNum)
+            }
+            
+        }else{
+            cell.voicePlayer.isHidden = true
+            cell.textView.isHidden = false
+            cell.bubbleHeightAnchor?.constant = 0
+        }
+        
     }
     
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
@@ -238,10 +376,10 @@ class ChatLogViewController: UICollectionViewController, UITextFieldDelegate, UI
         return NSString(string: text).boundingRect(with: size, options: options, attributes: [NSAttributedString.Key.font: UIFont.systemFont(ofSize: 16)], context: nil)
     }
     
-   lazy var sendBtn:UIButton = {
+    lazy var sendBtn:UIButton = {
         let btn = UIButton(type: UIButton.ButtonType.system)
         btn.setTitle("Send", for: UIControl.State.normal)
-    btn.addTarget(self, action: #selector(self.sendMessageHandler), for: UIControl.Event.touchUpInside)
+        btn.addTarget(self, action: #selector(self.sendMessageHandler), for: UIControl.Event.touchUpInside)
         btn.translatesAutoresizingMaskIntoConstraints = false
         return btn
     }()
@@ -341,7 +479,7 @@ class ChatLogViewController: UICollectionViewController, UITextFieldDelegate, UI
         footerView.trailingAnchor.constraint(equalTo: self.view.trailingAnchor).isActive = true
         
     }
-
+    
 }
 
 
