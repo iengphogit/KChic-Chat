@@ -26,6 +26,20 @@ class MessagesController: UITableViewController {
         //observeMessages()
         
         tableView.register(UserCell.self, forCellReuseIdentifier: self.cellId)
+        
+        let connectedRef = Database.database().reference(withPath: ".info/connected")
+        connectedRef.observe(.childAdded) { (dataSnapshot) in
+            
+            print(dataSnapshot)
+            
+            /*
+            if let connected = dataSnapshot.value as? Bool, connected {
+                print("Connected")
+            }else{
+                print("Not Connected")
+            }
+             */
+        }
     }
     
     func observeUserMessages() {
