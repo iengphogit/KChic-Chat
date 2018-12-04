@@ -303,9 +303,10 @@ class ChatLogViewController: UICollectionViewController, UITextFieldDelegate, UI
     
     override func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: cellId, for: indexPath) as! ChatMessageCell
+        cell.chatLogController = self
         let message = messages[indexPath.row]
         cell.textView.text = message.text
-        
+        cell.playIcon.tag = indexPath.row
         setupCell(cell: cell, message: message)
         if let message = message.text {
             cell.bubbleWidthAnchor?.constant = estimateFrameForText(text: message).width + 32
@@ -337,7 +338,7 @@ class ChatLogViewController: UICollectionViewController, UITextFieldDelegate, UI
         
         if let voiceUrl = message.voiceUrl {
             cell.voicePlayer.isHidden = false
-            cell.bubbleHeightAnchor?.constant = -40
+//            cell.bubbleHeightAnchor?.constant = -40
             cell.textView.isHidden = true
             guard let duration = message.duration else {
                 return
@@ -351,6 +352,7 @@ class ChatLogViewController: UICollectionViewController, UITextFieldDelegate, UI
                 let widthNum = (maxLenght * duration) / 60
                 cell.bubbleWidthAnchor?.constant = CGFloat(widthNum)
             }
+             
             
         }else{
             cell.voicePlayer.isHidden = true
@@ -358,12 +360,54 @@ class ChatLogViewController: UICollectionViewController, UITextFieldDelegate, UI
             cell.bubbleHeightAnchor?.constant = 0
         }
         
+//        cell.playIcon.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(playIconHandler(_:))))
+        
+    }
+    
+    func performPlayIconHandler(_ sender: UITapGestureRecognizer){
+        let imageView = sender.view as? UIImageView
+        let message = messages[imageView!.tag]
+        print("\(message.voiceUrl ?? "hehe")")
+        self.audioPlayerWithUrl(message.voiceUrl)
+    }
+    
+    func audioPlayerWithUrl(_ fileName: String?){
+        
+        if let fName = fileName {
+            let ref = Storage.storage().reference().child("message-voices").child(fName)
+            ref.downloadURL { (url, error) in
+                self.performPlayAVAudio(url)
+                print("\(url!)")
+            }
+        }
+        
+    }
+    
+    func performPlayAVAudio(_ url: URL?){
+        
+        let task = URLSession.shared.downloadTask(with: url!) { localURL, urlResponse, error in
+            if let localURL = localURL {
+                do{
+                    self.soundPlayer = try AVAudioPlayer(contentsOf: localURL)
+                    self.soundPlayer.delegate = self
+                    self.soundPlayer.prepareToPlay()
+                    self.soundPlayer.volume = 5.0
+                    self.soundPlayer.play()
+                }catch{
+                    print(error)
+                }
+            }
+        }
+        
+        task.resume()
     }
     
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
         var height:CGFloat = 80
         if let text = messages[indexPath.row].text {
             height = self.estimateFrameForText(text: text).height + 20
+        }else {
+            height = 39.09375
         }
         
         let width = UIScreen.main.bounds.width

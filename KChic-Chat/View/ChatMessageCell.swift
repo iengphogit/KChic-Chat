@@ -10,6 +10,8 @@ import UIKit
 
 class ChatMessageCell: UICollectionViewCell {
     
+    var chatLogController:ChatLogViewController?
+    
     let textView: UITextView = {
         let tv = UITextView()
         tv.text = "Sample"
@@ -41,25 +43,38 @@ class ChatMessageCell: UICollectionViewCell {
         return imageView
     }()
     
-    let voicePlayer: UIView = {
-        let view = UIView()
+    lazy var playIcon:UIImageView = {
         let playIcon = UIImageView()
         playIcon.image = UIImage(named: "icons8-play-filled-50")
-        view.addSubview(playIcon)
-        
+        playIcon.isUserInteractionEnabled = true
+        playIcon.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(self.playIconHandler)))
         playIcon.translatesAutoresizingMaskIntoConstraints = false
+        return playIcon
+    }()
+    
+    @objc func playIconHandler(_ sender: UITapGestureRecognizer){
+        chatLogController?.performPlayIconHandler(sender)
+    }
+    
+    let seekBar:UIProgressView = {
+        var seekBar = UIProgressView()
+        let ratio:Float = 50 / 100
+        seekBar.progress = ratio
+        seekBar.progressTintColor = UIColor.blue
+        seekBar.trackTintColor = UIColor.white
+        seekBar.translatesAutoresizingMaskIntoConstraints = false
+        return seekBar
+    }()
+    
+    lazy var voicePlayer: UIView = {
+        let view = UIView()
+        view.addSubview(playIcon)
         playIcon.leftAnchor.constraint(equalTo: view.leftAnchor, constant: 8).isActive = true
         playIcon.centerYAnchor.constraint(equalTo: view.centerYAnchor).isActive = true
         playIcon.widthAnchor.constraint(equalToConstant: 16).isActive = true
         playIcon.heightAnchor.constraint(equalToConstant: 16).isActive = true
         
-        var seekBar = UIProgressView()
-        let ratio:Float = 50 / 100
         view.addSubview(seekBar)
-        seekBar.progress = ratio
-        seekBar.progressTintColor = UIColor.blue
-        seekBar.trackTintColor = UIColor.white
-        seekBar.translatesAutoresizingMaskIntoConstraints = false
         seekBar.leftAnchor.constraint(equalTo: playIcon.rightAnchor, constant: 0).isActive = true
         seekBar.rightAnchor.constraint(equalTo: view.rightAnchor, constant: -8).isActive = true
         seekBar.centerYAnchor.constraint(equalTo: view.centerYAnchor).isActive = true
