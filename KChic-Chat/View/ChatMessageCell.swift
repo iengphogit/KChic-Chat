@@ -58,12 +58,16 @@ class ChatMessageCell: UICollectionViewCell {
     
     let seekBar:UIProgressView = {
         var seekBar = UIProgressView()
-        let ratio:Float = 50 / 100
-        seekBar.progress = ratio
         seekBar.progressTintColor = UIColor.blue
         seekBar.trackTintColor = UIColor.white
         seekBar.translatesAutoresizingMaskIntoConstraints = false
         return seekBar
+    }()
+    
+    let activityView:UIActivityIndicatorView = {
+        let aiv = UIActivityIndicatorView()
+        aiv.translatesAutoresizingMaskIntoConstraints = false
+        return aiv
     }()
     
     lazy var voicePlayer: UIView = {
@@ -74,9 +78,15 @@ class ChatMessageCell: UICollectionViewCell {
         playIcon.widthAnchor.constraint(equalToConstant: 16).isActive = true
         playIcon.heightAnchor.constraint(equalToConstant: 16).isActive = true
         
+        view.addSubview(activityView)
+        activityView.widthAnchor.constraint(equalToConstant: 16).isActive = true
+        activityView.heightAnchor.constraint(equalToConstant: 16).isActive = true
+        activityView.centerYAnchor.constraint(equalTo: view.centerYAnchor).isActive = true
+        activityView.rightAnchor.constraint(equalTo: view.rightAnchor, constant: -8).isActive = true
+        
         view.addSubview(seekBar)
         seekBar.leftAnchor.constraint(equalTo: playIcon.rightAnchor, constant: 0).isActive = true
-        seekBar.rightAnchor.constraint(equalTo: view.rightAnchor, constant: -8).isActive = true
+        seekBar.rightAnchor.constraint(equalTo: activityView.leftAnchor, constant: -8).isActive = true
         seekBar.centerYAnchor.constraint(equalTo: view.centerYAnchor).isActive = true
         
         view.translatesAutoresizingMaskIntoConstraints = false

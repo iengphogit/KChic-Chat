@@ -166,7 +166,10 @@ class ChatLogViewController: UICollectionViewController, UITextFieldDelegate, UI
     }
     
     func audioPlayerDidFinishPlaying(_ player: AVAudioPlayer, successfully flag: Bool) {
-        
+        if timer != nil {
+            timer?.invalidate()
+            timer = nil
+        }
     }
     
     
@@ -336,7 +339,7 @@ class ChatLogViewController: UICollectionViewController, UITextFieldDelegate, UI
         }
         
         
-        if let voiceUrl = message.voiceUrl {
+        if let _ = message.voiceUrl {
             cell.voicePlayer.isHidden = false
 //            cell.bubbleHeightAnchor?.constant = -40
             cell.textView.isHidden = true
@@ -352,7 +355,6 @@ class ChatLogViewController: UICollectionViewController, UITextFieldDelegate, UI
                 let widthNum = (maxLenght * duration) / 60
                 cell.bubbleWidthAnchor?.constant = CGFloat(widthNum)
             }
-             
             
         }else{
             cell.voicePlayer.isHidden = true
@@ -363,29 +365,51 @@ class ChatLogViewController: UICollectionViewController, UITextFieldDelegate, UI
 //        cell.playIcon.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(playIconHandler(_:))))
         
     }
-    
+    var timer:Timer?
+    var currentCell:ChatMessageCell!
     func performPlayIconHandler(_ sender: UITapGestureRecognizer){
         let imageView = sender.view as? UIImageView
-        let message = messages[imageView!.tag]
-        print("\(message.voiceUrl ?? "hehe")")
-        self.audioPlayerWithUrl(message.voiceUrl)
+        let index = imageView!.tag
+        let message = messages[index]
+        if currentCell != nil {
+            currentCell.seekBar.progress = 0
+        }
+        if soundPlayer != nil {
+            soundPlayer = nil
+        }
+        let indexPath = IndexPath(row: index, section: 0)
+        currentCell = collectionView.cellForItem(at: indexPath) as? ChatMessageCell
+        currentCell.activityView.startAnimating()
+        self.timer = Timer.scheduledTimer(withTimeInterval: 0.1, repeats: true, block: { (Timer) in
+            if self.soundPlayer != nil {
+                let ratio = self.soundPlayer.currentTime / self.soundPlayer.duration
+                self.currentCell.seekBar.progress = Float(ratio)
+            }else{
+                self.currentCell.seekBar.progress = 0
+            }
+        })
+        
+        self.audioPlayerWithUrl(message.voiceUrl, currentCell)
+        
     }
     
-    func audioPlayerWithUrl(_ fileName: String?){
+    func audioPlayerWithUrl(_ fileName: String?, _ currentCell: ChatMessageCell){
         
         if let fName = fileName {
             let ref = Storage.storage().reference().child("message-voices").child(fName)
             ref.downloadURL { (url, error) in
-                self.performPlayAVAudio(url)
-                print("\(url!)")
+                self.performPlayAVAudio(url, currentCell)
             }
         }
         
     }
     
-    func performPlayAVAudio(_ url: URL?){
-        
+    func performPlayAVAudio(_ url: URL?, _ currentCell: ChatMessageCell){
         let task = URLSession.shared.downloadTask(with: url!) { localURL, urlResponse, error in
+            DispatchQueue.main.async {
+                currentCell.activityView.stopAnimating()
+            }
+            
             if let localURL = localURL {
                 do{
                     self.soundPlayer = try AVAudioPlayer(contentsOf: localURL)
@@ -393,10 +417,12 @@ class ChatLogViewController: UICollectionViewController, UITextFieldDelegate, UI
                     self.soundPlayer.prepareToPlay()
                     self.soundPlayer.volume = 5.0
                     self.soundPlayer.play()
+                    
                 }catch{
                     print(error)
                 }
             }
+            
         }
         
         task.resume()
