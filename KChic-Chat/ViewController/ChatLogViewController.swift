@@ -55,6 +55,8 @@ class ChatLogViewController: UICollectionViewController, UITextFieldDelegate, UI
                 self.messages.append(message)
                 DispatchQueue.main.async {
                     self.collectionView.reloadData()
+                    let indexPath = IndexPath(item: self.messages.count - 1, section: 0)
+                    self.collectionView.scrollToItem(at: indexPath , at: .bottom, animated: true)
                 }
             }
             
@@ -73,10 +75,22 @@ class ChatLogViewController: UICollectionViewController, UITextFieldDelegate, UI
         
         //        setupContainerView()
         //        setupKeybaordservers()
-        
+        setupKeyboardObserver()
         setupRecorder()
     }
     
+    func setupKeyboardObserver(){
+        NotificationCenter.default.addObserver(self, selector: #selector(handlerKeyboardDidShow), name: UIResponder.keyboardDidShowNotification, object: nil)
+    }
+    
+    @objc func handlerKeyboardDidShow(){
+        if self.messages.count > 0 {
+            let indexPath = IndexPath(item: self.messages.count - 1, section: 0)
+            DispatchQueue.main.async {
+                self.collectionView.scrollToItem(at: indexPath, at: .top, animated: true)
+            }
+        }
+    }
     
     func getDocumentDirection() -> URL{
         let paths = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask)
