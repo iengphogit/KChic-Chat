@@ -101,9 +101,15 @@ class ChatMessageCell: UICollectionViewCell {
     
     override init(frame: CGRect) {
         super.init(frame: frame)
+        addSubview(profileImageView)
         addSubview(bubbleView)
         addSubview(textView)
-        addSubview(profileImageView)
+        
+        //ProfileImageView Constraint
+        profileImageView.leftAnchor.constraint(equalTo: self.leftAnchor, constant: 8).isActive = true
+        profileImageView.bottomAnchor.constraint(equalTo: self.bottomAnchor).isActive = true
+        profileImageView.widthAnchor.constraint(equalToConstant: 32).isActive = true
+        profileImageView.heightAnchor.constraint(equalToConstant: 32).isActive = true
         
         bubbleView.addSubview(voicePlayer)
         voicePlayer.widthAnchor.constraint(equalTo: bubbleView.widthAnchor).isActive = true
@@ -115,10 +121,11 @@ class ChatMessageCell: UICollectionViewCell {
         bubbleRightAnchor = bubbleView.rightAnchor.constraint(equalTo: self.rightAnchor, constant: -8)
         bubbleRightAnchor?.isActive = true
         
-        bubbleLeftAnchor = bubbleView.leftAnchor.constraint(equalTo: profileImageView.rightAnchor)
+        bubbleLeftAnchor = bubbleView.leftAnchor.constraint(equalTo: profileImageView.rightAnchor, constant: 8)
 //        bubbleLeftAnchor?.isActive = true
         
         bubbleView.topAnchor.constraint(equalTo: self.topAnchor).isActive = true
+        
         bubbleWidthAnchor =  bubbleView.widthAnchor.constraint(equalToConstant: 200)
         bubbleWidthAnchor?.isActive = true
         bubbleHeightAnchor = bubbleView.heightAnchor.constraint(equalTo: self.heightAnchor)
@@ -131,11 +138,6 @@ class ChatMessageCell: UICollectionViewCell {
 //        textView.widthAnchor.constraint(equalTo: bubbleView.widthAnchor, constant: 8).isActive = true
         textView.heightAnchor.constraint(equalTo: bubbleView.heightAnchor).isActive = true
         
-        //ProfileImageView Constraint
-        profileImageView.leftAnchor.constraint(equalTo: self.leftAnchor, constant: 8).isActive = true
-        profileImageView.bottomAnchor.constraint(equalTo: self.bottomAnchor).isActive = true
-        profileImageView.widthAnchor.constraint(equalToConstant: 32).isActive = true
-        profileImageView.heightAnchor.constraint(equalToConstant: 32).isActive = true
     }
     
     required init?(coder aDecoder: NSCoder) {

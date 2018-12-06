@@ -357,7 +357,7 @@ class ChatLogViewController: UICollectionViewController, UITextFieldDelegate, UI
             cell.bubbleView.backgroundColor = ChatMessageCell.blueColor
             cell.textView.textColor = UIColor.white
             cell.profileImageView.isHidden = true
-            
+             
             cell.bubbleRightAnchor?.isActive = true
             cell.bubbleLeftAnchor?.isActive = false
         }else{
@@ -368,7 +368,6 @@ class ChatLogViewController: UICollectionViewController, UITextFieldDelegate, UI
             cell.bubbleRightAnchor?.isActive = false
             cell.bubbleLeftAnchor?.isActive = true
         }
-        
         
         if let _ = message.voiceUrl {
             cell.voicePlayer.isHidden = false
