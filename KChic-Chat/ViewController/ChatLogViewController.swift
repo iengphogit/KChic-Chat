@@ -184,6 +184,10 @@ class ChatLogViewController: UICollectionViewController, UITextFieldDelegate, UI
             timer?.invalidate()
             timer = nil
         }
+        
+        if currentCell != nil {
+            currentCell.seekBar.progress = 0
+        }
     }
     
     
