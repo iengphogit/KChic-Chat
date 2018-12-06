@@ -18,6 +18,7 @@ class ChatMessageCell: UICollectionViewCell {
         tv.font = UIFont.systemFont(ofSize: 16)
         tv.backgroundColor = UIColor.clear
         tv.textColor = UIColor.white
+        tv.textContainer.lineBreakMode = .byWordWrapping
         tv.isEditable = false
         tv.translatesAutoresizingMaskIntoConstraints = false
         return tv
@@ -125,9 +126,10 @@ class ChatMessageCell: UICollectionViewCell {
         
         //TextView Constraint
         textView.leftAnchor.constraint(equalTo: bubbleView.leftAnchor, constant: 8).isActive = true
-        textView.topAnchor.constraint(equalTo: self.topAnchor).isActive = true
-        textView.rightAnchor.constraint(equalTo: self.rightAnchor, constant: 0).isActive = true
-        textView.heightAnchor.constraint(equalTo: self.heightAnchor).isActive = true
+        textView.topAnchor.constraint(equalTo: bubbleView.topAnchor).isActive = true
+        textView.rightAnchor.constraint(equalTo: bubbleView.rightAnchor, constant: 8).isActive = true
+//        textView.widthAnchor.constraint(equalTo: bubbleView.widthAnchor, constant: 8).isActive = true
+        textView.heightAnchor.constraint(equalTo: bubbleView.heightAnchor).isActive = true
         
         //ProfileImageView Constraint
         profileImageView.leftAnchor.constraint(equalTo: self.leftAnchor, constant: 8).isActive = true

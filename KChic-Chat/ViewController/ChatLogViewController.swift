@@ -272,6 +272,9 @@ class ChatLogViewController: UICollectionViewController, UITextFieldDelegate, UI
     override func viewWillDisappear(_ animated: Bool) {
         super.viewDidDisappear(animated)
         NotificationCenter.default.removeObserver(self)
+        if self.soundPlayer != nil {
+            self.soundPlayer.stop()
+        }
     }
     
     override func viewWillTransition(to size: CGSize, with coordinator: UIViewControllerTransitionCoordinator) {
@@ -324,10 +327,24 @@ class ChatLogViewController: UICollectionViewController, UITextFieldDelegate, UI
         let message = messages[indexPath.row]
         cell.textView.text = message.text
         cell.playIcon.tag = indexPath.row
-        setupCell(cell: cell, message: message)
-        if let message = message.text {
-            cell.bubbleWidthAnchor?.constant = estimateFrameForText(text: message).width + 32
+        
+        if message.fromId == Auth.auth().currentUser?.uid {
+            cell.bubbleView.backgroundColor = ChatMessageCell.blueColor
+            cell.textView.textColor = UIColor.white
+            cell.profileImageView.isHidden = true
+            
+            cell.bubbleRightAnchor?.isActive = true
+            cell.bubbleLeftAnchor?.isActive = false
+        }else{
+            cell.bubbleView.backgroundColor = UIColor.init(netHex: 0xf0f0f0)
+            cell.textView.textColor = UIColor.black
+            cell.profileImageView.isHidden = false
+            
+            cell.bubbleRightAnchor?.isActive = false
+            cell.bubbleLeftAnchor?.isActive = true
         }
+        
+        setupCell(cell: cell, message: message)
         return cell
     }
     
@@ -374,6 +391,10 @@ class ChatLogViewController: UICollectionViewController, UITextFieldDelegate, UI
             cell.voicePlayer.isHidden = true
             cell.textView.isHidden = false
             cell.bubbleHeightAnchor?.constant = 0
+        }
+        
+        if let message = message.text {
+            cell.bubbleWidthAnchor?.constant = estimateFrameForText(text: message).width + 32
         }
         
 //        cell.playIcon.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(playIconHandler(_:))))
@@ -443,7 +464,7 @@ class ChatLogViewController: UICollectionViewController, UITextFieldDelegate, UI
     }
     
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
-        var height:CGFloat = 80
+        var height:CGFloat = 0
         if let text = messages[indexPath.row].text {
             height = self.estimateFrameForText(text: text).height + 20
         }else {
@@ -566,7 +587,18 @@ class ChatLogViewController: UICollectionViewController, UITextFieldDelegate, UI
     
 }
 
-
-extension ChatLogViewController {
+extension NSAttributedString {
+    func height(withConstrainedWidth width: CGFloat) -> CGFloat {
+        let constraintRect = CGSize(width: width, height: .greatestFiniteMagnitude)
+        let boundingBox = boundingRect(with: constraintRect, options: .usesLineFragmentOrigin, context: nil)
+        
+        return ceil(boundingBox.height)
+    }
     
+    func width(withConstrainedHeight height: CGFloat) -> CGFloat {
+        let constraintRect = CGSize(width: .greatestFiniteMagnitude, height: height)
+        let boundingBox = boundingRect(with: constraintRect, options: .usesLineFragmentOrigin, context: nil)
+        
+        return ceil(boundingBox.width)
+    }
 }
